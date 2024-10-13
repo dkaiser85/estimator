@@ -5,6 +5,8 @@
     <title>The Culture MRI® Performance Estimator</title>
     <!-- Import Inter Font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Apply Inter Font */
         body {
@@ -173,6 +175,12 @@
             text-decoration: underline;
         }
 
+        /* Additional padding between URL and footnote */
+        .liner-note .footnote {
+            margin-top: 10px; /* Adjust the value as needed */
+            display: block;
+        }
+
         /* Responsive Design */
         @media (max-width: 600px) {
             .result-item {
@@ -202,14 +210,14 @@
         <!-- Total Labor Spend Input -->
         <div class="input-group">
             <label for="totalLaborCost">Total Labor Spend (USD)</label>
-            <input type="number" id="totalLaborCost" placeholder="Enter your total labor spend" min="0">
+            <input type="text" id="totalLaborCost" placeholder="Enter your total labor spend">
         </div>
 
         <!-- Estimated Employee Engagement Input -->
         <div class="input-group">
-                <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
-        <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
-    </div>
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+        </div>
 
         <!-- Projected Turnover Percentage Input -->
         <div class="input-group">
@@ -231,7 +239,7 @@
                           stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
                     <!-- Percentage Text -->
                     <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
-                          fill="#173248" id="engagementText">--</text>
+                          fill="#173248" id="engagementText">0%</text>
                 </svg>
             </div>
         </div>
@@ -248,28 +256,29 @@
                           stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
                     <!-- Percentage Text -->
                     <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
-                          fill="#173248" id="returnOnLaborText">--</text>
+                          fill="#173248" id="returnOnLaborText">0%</text>
                 </svg>
             </div>
         </div>
     </div>
 
     <div class="financial-metrics">
-        <!-- Annualized Lost Labor -->
+        <!-- Reordered Financial Metrics -->
+        <!-- A 1% Engagement Shift in Engagement is worth -->
         <div class="financial-item">
-            <h3>Annualized Lost Labor</h3>
-            <p class="red" id="lostLaborCost">---</p>
-        </div>
-
-        <!-- A 1% Shift in Engagement is worth -->
-        <div class="financial-item">
-            <h3>A 1% Shift in Engagement is worth</h3>
+            <h3>A 1% Engagement Shift in Engagement is worth</h3>
             <p class="green" id="onePercentChange">--</p>
         </div>
 
-        <!-- Total Annualized Losses (inc Turnover) -->
+        <!-- Annualized Lost Labor -->
         <div class="financial-item">
-            <h3>Total Annualized Losses (inc Turnover)</h3>
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- Annualized Total Losses with Turnover -->
+        <div class="financial-item">
+            <h3>Annualized Total Losses with Turnover</h3>
             <p class="red" id="totalAnnualizedLosses">--</p>
         </div>
     </div>
@@ -282,8 +291,10 @@
         <em>Gallup 2024 Annual Employee Engagement, State of The Global Workplace Report, June 12, 2024.</em><br>
         <a href="https://www.gallup.com/394373/indicator-employee-engagement.aspx" target="_blank">
             https://www.gallup.com/394373/indicator-employee-engagement.aspx
-        </a><br>
+        </a>
+        <span class="footnote"><br>
         <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+        </span>
     </div>
 </div>
 
@@ -306,7 +317,12 @@
         // Initialize gauges and displays
         calculateMetrics();
 
-        inputLaborCost.addEventListener('input', function() {
+        // Add event listeners
+        inputLaborCost.addEventListener('input', function(e) {
+            // Remove non-digit characters
+            const value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+            // Format with commas
+            e.target.value = formatNumberWithCommas(value);
             calculateMetrics();
         });
 
@@ -317,6 +333,10 @@
         inputTurnover.addEventListener('input', function() {
             calculateMetrics();
         });
+
+        function formatNumberWithCommas(number) {
+            return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
         function updateGauge(fillElement, percentage, color) {
             // Ensure percentage does not exceed 100%
@@ -330,7 +350,8 @@
         }
 
         function calculateMetrics() {
-            const laborCost = parseFloat(inputLaborCost.value);
+            // Parse the labor cost input by removing commas
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
             const engagementPercentage = parseFloat(inputEngagement.value);
             const turnoverPercentage = parseFloat(inputTurnover.value);
 
