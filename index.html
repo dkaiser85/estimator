@@ -74,6 +74,23 @@
             outline: none;
         }
 
+        /* Generate Report Button */
+        #generateReportButton {
+            width: 100%;
+            padding: 12px;
+            background-color: #406795;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #generateReportButton:hover {
+            background-color: #0056b3;
+        }
+
         /* Results Section */
         .results-section {
             margin-top: 25px;
@@ -100,7 +117,7 @@
             width: 195px;
             height: 195px;
             position: relative;
-            margin: 0 auto 10px;
+            margin: 0 auto 10px; /* Reduced margin-bottom if necessary */
         }
 
         .gauge__background {
@@ -149,6 +166,10 @@
             color: #75BB7D;
         }
 
+        .financial-item p.black {
+            color: #000000; /* New class for black color */
+        }
+
         /* Footer Styling */
         .calculator-footer {
             text-align: center;
@@ -186,6 +207,165 @@
                 font-size: 18px;
             }
         }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%; /* Adjusted for better mobile view */
+            max-width: 800px; /* Limit width on large screens */
+            border-radius: 10px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Report Content Styling */
+        .report-content {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        .report-content h2 {
+            text-align: left; /* Changed from center to left */
+            color: #406795; /* Changed to supplied blue */
+            margin-bottom: 20px;
+        }
+
+        .report-content h3.blue-header {
+            color: #406795; /* Supplied blue color */
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .report-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .report-content .highlight {
+            font-weight: 700;
+            color: #173248;
+        }
+
+        .report-content .subtext {
+            font-size: 14px;
+            color: #6B7D8D;
+        }
+
+        /* Logo Styling in Report */
+        .report-content .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .report-content .logo img {
+            max-width: 150px;
+        }
+
+        /* Additional Modal-Specific Styling */
+        .report-content .results-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 10px 0; /* Shortened from 20px to 10px */
+        }
+
+        .report-content .result-item {
+            width: 45%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .report-content .result-item h3 {
+            margin-bottom: 5px;
+        }
+
+        /* Center "Annualized Lost Labor" Below Gauges */
+        .report-content .financial-metrics-center {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .report-content .financial-metrics-center h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .report-content .financial-metrics-center p.red {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ED5C5C;
+            margin: 0;
+        }
+
+        .report-content .financial-metrics-center p.black {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000; /* Black color for Conclusion */
+            margin: 0;
+        }
+
+        /* Specific Styling for "Total Additional Profit (Annual):" */
+        .report-content .financial-metrics-center h3.total-additional-profit {
+            text-transform: uppercase;
+            font-weight: 700; /* Bold */
+            letter-spacing: -0.07em; /* Adjusted kerning */
+            color: #000000; /* Black */
+        }
+
+        @media (max-width: 600px) {
+            .report-content .result-item {
+                width: 100%;
+            }
+
+            .report-content .gauge {
+                width: 100%;
+                max-width: 150px;
+                margin: 0 auto 10px;
+            }
+        }
+
+        /* Adjust Gauge Size in Report */
+        .report-content .gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px; /* Center gauges */
+        }
+
     </style>
 </head>
 <body>
@@ -253,7 +433,6 @@
     </div>
 
     <div class="financial-metrics">
-        <!-- Reordered Financial Metrics -->
         <!-- A 1% Engagement Shift in Engagement is worth -->
         <div class="financial-item">
             <h3>A 1% Shift in Engagement is worth</h3>
@@ -271,14 +450,29 @@
             <h3>Annualized Total Losses with Turnover</h3>
             <p class="red" id="totalAnnualizedLosses">--</p>
         </div>
+
+        <!-- Generate Report Button moved here -->
+        <div class="financial-item generate-report-group">
+            <button type="button" id="generateReportButton">Generate Projected Profitability Analysis Report</button>
+        </div>
     </div>
 
     <div class="calculator-footer">
-        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+        <p>&copy; 2024 The Culture MRI® All Rights Reserved.</p>
     </div>
 
     <div class="liner-note">
         <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div id="reportModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="report-content" id="reportContent">
+            <!-- Report content will be injected here -->
+        </div>
     </div>
 </div>
 
@@ -298,13 +492,20 @@
         const onePercentChangeEl = document.getElementById('onePercentChange');
         const totalAnnualizedLossesEl = document.getElementById('totalAnnualizedLosses');
 
+        const generateReportButton = document.getElementById('generateReportButton');
+
+        // Modal elements
+        const reportModal = document.getElementById('reportModal');
+        const closeButton = document.querySelector('.close-button');
+        const reportContent = document.getElementById('reportContent');
+
         // Initialize gauges and displays
         calculateMetrics();
 
         // Add event listeners
         inputLaborCost.addEventListener('input', function(e) {
-            // Remove non-digit characters
-            const value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+            // Remove non-digit characters except decimal point
+            const value = e.target.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
             // Format with commas
             e.target.value = formatNumberWithCommas(value);
             calculateMetrics();
@@ -319,7 +520,10 @@
         });
 
         function formatNumberWithCommas(number) {
-            return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            if (!number) return '';
+            const parts = number.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
         }
 
         function updateGauge(fillElement, percentage, color) {
@@ -364,11 +568,12 @@
             }
 
             updateGauge(engagementFill, engagementPercentage, engagementColor);
-            engagementText.textContent = engagementPercentage + '%';
+            engagementText.textContent = Math.round(engagementPercentage) + '%'; // Rounded
 
             /*** Calculate Return-On-Labor® ***/
-            const returnOnLabor = ((0.46 * (engagementPercentage / 100) + 0.54) * laborCost);
-            const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+            const engagementFactor = (0.46 * (engagementPercentage / 100)) + 0.54;
+            const returnOnLabor = engagementFactor * laborCost;
+            const returnOnLaborPercentage = Math.round( (returnOnLabor / laborCost) * 100 ); // Rounded
 
             let returnOnLaborColor = '';
 
@@ -381,15 +586,15 @@
             }
 
             updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
-            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%';
+            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%'; // Rounded
 
             /*** Update Financial Metrics ***/
             const lostLaborCost = laborCost - returnOnLabor;
-            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`;
+            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`; // Rounded
             lostLaborCostEl.textContent = formattedLostLaborCost;
 
-            const onePercentChange = (0.0046 * laborCost);
-            const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+            const onePercentChange = Math.round(0.0046 * laborCost); // Rounded
+            const formattedOnePercentChange = `$${onePercentChange.toLocaleString('en-US')}`;
             onePercentChangeEl.textContent = formattedOnePercentChange;
 
             /*** Calculate Projected Turnover Costs ***/
@@ -404,7 +609,7 @@
 
             /*** Calculate Total Annualized Losses ***/
             const totalAnnualizedLosses = lostLaborCost + projectedTurnoverCosts;
-            const formattedTotalAnnualizedLosses = `-$${Math.round(totalAnnualizedLosses).toLocaleString('en-US')}`;
+            const formattedTotalAnnualizedLosses = `-$${Math.round(totalAnnualizedLosses).toLocaleString('en-US')}`; // Rounded
             totalAnnualizedLossesEl.textContent = formattedTotalAnnualizedLosses;
         }
 
@@ -422,6 +627,189 @@
             onePercentChangeEl.textContent = '--';
             totalAnnualizedLossesEl.textContent = '--';
         }
+
+        // Generate Report Button Click Event
+        generateReportButton.addEventListener('click', function() {
+            // Get current inputs
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
+            const engagementPercentage = parseFloat(inputEngagement.value);
+            const turnoverPercentage = parseFloat(inputTurnover.value);
+
+            // Validate inputs
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100 ||
+                isNaN(turnoverPercentage) || turnoverPercentage < 0 || turnoverPercentage > 100
+            ) {
+                alert("Please enter valid input values.");
+                return;
+            }
+
+            // Calculate current metrics
+            const currentEngagementFactor = (0.46 * (engagementPercentage / 100)) + 0.54;
+            const currentReturnOnLabor = currentEngagementFactor * laborCost;
+            const currentAnnualizedLostLabor = Math.round(laborCost - currentReturnOnLabor); // Rounded
+
+            // Calculate projected metrics with 10% higher engagement
+            const projectedEngagement = Math.min(engagementPercentage + 10, 100); // Cap at 100%
+            const projectedEngagementFactor = (0.46 * (projectedEngagement / 100)) + 0.54;
+            const projectedReturnOnLabor = projectedEngagementFactor * laborCost;
+            const projectedAnnualizedLostLabor = Math.round(laborCost - projectedReturnOnLabor); // Rounded
+
+            const additionalProfit = Math.round(currentAnnualizedLostLabor - projectedAnnualizedLostLabor); // Rounded
+
+            // Calculate investment and net gain
+            const investment = Math.round(additionalProfit / 3); // 1/3 of total additional profit
+            const netGain = additionalProfit; // As per user's example
+
+            // Format numbers with commas and no decimal places
+            function formatCurrency(num) {
+                return num.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            }
+
+            // Calculate stroke-dashoffset for gauges
+            const currentEngagementDashOffset = 367.566 - (Math.round(engagementPercentage) / 100) * 367.566;
+            const currentReturnOnLaborDashOffset = 367.566 - (Math.round( (currentReturnOnLabor / laborCost) * 100 ) / 100) * 367.566;
+
+            const projectedEngagementDashOffset = 367.566 - (Math.round(projectedEngagement) / 100) * 367.566;
+            const projectedReturnOnLaborDashOffset = 367.566 - (Math.round( (projectedReturnOnLabor / laborCost) * 100 ) / 100) * 367.566;
+
+            // Generate report content based on supplied text
+            const reportHTML = `
+                <div class="logo">
+                    <img src="https://static.showit.co/file/UwdjWfwfRQ-XzVtd8ECO4g/176740/cmri_blue_for_dk.png" alt="The Culture MRI® Logo">
+                </div>
+                <h2>Projected Financial Impact For Your Company</h2>
+                <p>These recommendations are designed to provide a lift within the culture of your company by addressing the reported appetite for stronger vision. While these action steps are only described briefly here, we look forward to discussing each detail with your team and providing additional guidance as needed.</p>
+                <p>Based on the rather conservative plan described in this report, your company can improve its Employee Value Proposition, better providing workers what they need to thrive and perform. This improvement requires no additional spending on salaries but maximizes the return on your current labor costs. The result will be higher productivity and profitability. Best of all, the impact will be measurable, not only in assessment scores, but also in financial results.</p>
+                
+                <!-- Before Section Header -->
+                <h3 class="blue-header">Before:</h3>
+                
+                <p>Currently, you’re investing ${formatCurrency(laborCost)} annually in labor, but with a ${Math.round(engagementPercentage)}% engagement level, you’re losing ${formatCurrency(currentAnnualizedLostLabor)} in productivity each year. This is a significant hidden cost impacting your bottom line.</p>
+                
+                <!-- Insert Current Engagement Gauge and Return-On-Labor® Gauge -->
+                <div class="results-section">
+                    <div class="result-item">
+                        <h3>Overall Engagement</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="${currentEngagementDashOffset}"
+                                      stroke="#ED5C5C" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round(engagementPercentage)}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Return-On-Labor®</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="${currentReturnOnLaborDashOffset}"
+                                      stroke="#E1D687" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round( (currentReturnOnLabor / laborCost) * 100 )}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Annualized Lost Labor Centered Below Gauges -->
+                <div class="financial-metrics-center">
+                    <h3>Annualized Lost Labor</h3>
+                    <p class="red">${formatCurrency(currentAnnualizedLostLabor)}</p>
+                </div>
+                
+                <!-- After Section Header -->
+                <h3 class="blue-header">After:</h3>
+                
+                <p>By implementing targeted strategies and The Culture MRI® recommendations to elevate employee engagement to ${projectedEngagement}%, you will recover ${formatCurrency(additionalProfit)} annually from your existing labor investment.</p>
+                
+                <!-- Insert Projected Engagement Gauge and Return-On-Labor® Gauge -->
+                <div class="results-section">
+                    <div class="result-item">
+                        <h3>Overall Engagement</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="#75BB7D" stroke-dasharray="367.566" stroke-dashoffset="${projectedEngagementDashOffset}"
+                                      stroke="#75BB7D" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${projectedEngagement}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Return-On-Labor®</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="#75BB7D" stroke-dasharray="367.566" stroke-dashoffset="${projectedReturnOnLaborDashOffset}"
+                                      stroke="#75BB7D" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round( (projectedReturnOnLabor / laborCost) * 100 )}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Adjusted Annualized Lost Labor Centered Below Gauges -->
+                <div class="financial-metrics-center">
+                    <h3>Annualized Lost Labor</h3>
+                    <p class="red">${formatCurrency(projectedAnnualizedLostLabor)}</p>
+                </div>
+                
+                <!-- Conclusion Section Header -->
+                <h3 class="blue-header">Conclusion:</h3>
+                
+               <!-- Dynamic Paragraph Below Conclusion -->
+                <div class="dynamic-paragraph">
+                    <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
+                </div>
+                
+                <!-- Total Additional Profit (Annual): -->
+                <div class="financial-metrics-center">
+                    <h3 class="total-additional-profit">Total Additional Profit (Annual):</h3>
+                    <p class="black">${formatCurrency(additionalProfit)}</p>
+                </div>
+            `;
+
+            // Inject report content into the modal
+            reportContent.innerHTML = reportHTML;
+
+            // Display the modal
+            reportModal.style.display = 'block';
+        });
+
+        // Close Modal When 'x' is Clicked
+        closeButton.addEventListener('click', function() {
+            reportModal.style.display = 'none';
+        });
+
+        // Close Modal When Clicking Outside the Modal Content
+        window.addEventListener('click', function(event) {
+            if (event.target == reportModal) {
+                reportModal.style.display = 'none';
+            }
+        });
     });
 </script>
 
