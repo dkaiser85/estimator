@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Viewport Meta Tag -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jsPDF and html2canvas Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Apply Inter Font */
         body {
@@ -78,7 +81,7 @@
         #generateReportButton {
             width: 100%;
             padding: 12px;
-            background-color: #406795;
+            background-color: #6666c6;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -88,7 +91,7 @@
         }
 
         #generateReportButton:hover {
-            background-color: #0056b3;
+            background-color: #496691;
         }
 
         /* Results Section */
@@ -341,10 +344,48 @@
 
         /* Specific Styling for "Total Additional Profit (Annual):" */
         .report-content .financial-metrics-center h3.total-additional-profit {
-            text-transform: uppercase;
-            font-weight: 700; /* Bold */
-            letter-spacing: -0.07em; /* Adjusted kerning */
-            color: #000000; /* Black */
+            text-transform: uppercase; /* ALL CAPS */
+            font-weight: 700;          /* Bold (Inter Semi Bold approximated with 700) */
+            letter-spacing: -0.07em;   /* -0.07em letter-spacing */
+            color: #000000;            /* Black */
+        }
+
+        /* Dynamic Paragraph Styling */
+        .report-content .dynamic-paragraph {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .report-content .dynamic-paragraph p {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        /* Download PDF Button Styling */
+        .report-content .download-pdf-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #6666c6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .report-content .download-pdf-button:hover {
+            background-color: #496691;
+        }
+
+        /* Adjust Gauge Size in Report */
+        .report-content .gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px; /* Center gauges */
         }
 
         @media (max-width: 600px) {
@@ -357,13 +398,6 @@
                 max-width: 150px;
                 margin: 0 auto 10px;
             }
-        }
-
-        /* Adjust Gauge Size in Report */
-        .report-content .gauge {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 10px; /* Center gauges */
         }
 
     </style>
@@ -458,7 +492,7 @@
     </div>
 
     <div class="calculator-footer">
-        <p>&copy; 2024 The Culture MRI® All Rights Reserved.</p>
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
     </div>
 
     <div class="liner-note">
@@ -559,9 +593,9 @@
             /*** Update Overall Engagement Gauge ***/
             let engagementColor = '';
 
-            if (engagementPercentage < 50) {
+            if (engagementPercentage <= 45) {
                 engagementColor = '#ED5C5C'; // Red
-            } else if (engagementPercentage < 80) {
+            } else if (engagementPercentage <= 70) {
                 engagementColor = '#E1D687'; // Yellow
             } else {
                 engagementColor = '#75BB7D'; // Green
@@ -669,10 +703,21 @@
 
             // Calculate stroke-dashoffset for gauges
             const currentEngagementDashOffset = 367.566 - (Math.round(engagementPercentage) / 100) * 367.566;
-            const currentReturnOnLaborDashOffset = 367.566 - (Math.round( (currentReturnOnLabor / laborCost) * 100 ) / 100) * 367.566;
+            const currentReturnOnLaborDashOffset = 367.566 - (Math.round( (currentReturnOnLabor / laborCost) * 100 )) * 367.566 / 100;
 
             const projectedEngagementDashOffset = 367.566 - (Math.round(projectedEngagement) / 100) * 367.566;
-            const projectedReturnOnLaborDashOffset = 367.566 - (Math.round( (projectedReturnOnLabor / laborCost) * 100 ) / 100) * 367.566;
+            const projectedReturnOnLaborDashOffset = 367.566 - (Math.round( (projectedReturnOnLabor / laborCost) * 100 )) * 367.566 / 100;
+
+            // Determine colors based on specified ranges
+            function getColor(percentage) {
+                if (percentage <= 45) {
+                    return '#ED5C5C'; // Red
+                } else if (percentage <= 70) {
+                    return '#E1D687'; // Yellow
+                } else {
+                    return '#75BB7D'; // Green
+                }
+            }
 
             // Generate report content based on supplied text
             const reportHTML = `
@@ -698,8 +743,8 @@
                                 <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
                                 <!-- Fill Arc -->
                                 <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="${currentEngagementDashOffset}"
-                                      stroke="#ED5C5C" />
+                                      stroke="${getColor(Math.round(engagementPercentage))}" stroke-dasharray="367.566" stroke-dashoffset="${currentEngagementDashOffset}"
+                                      stroke="${getColor(Math.round(engagementPercentage))}" />
                                 <!-- Percentage Text -->
                                 <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
                                       fill="#173248">${Math.round(engagementPercentage)}%</text>
@@ -714,8 +759,8 @@
                                 <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
                                 <!-- Fill Arc -->
                                 <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="${currentReturnOnLaborDashOffset}"
-                                      stroke="#E1D687" />
+                                      stroke="${getColor(Math.round( (currentReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${currentReturnOnLaborDashOffset}"
+                                      stroke="${getColor(Math.round( (currentReturnOnLabor / laborCost) * 100 ))}" />
                                 <!-- Percentage Text -->
                                 <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
                                       fill="#173248">${Math.round( (currentReturnOnLabor / laborCost) * 100 )}%</text>
@@ -745,8 +790,8 @@
                                 <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
                                 <!-- Fill Arc -->
                                 <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="#75BB7D" stroke-dasharray="367.566" stroke-dashoffset="${projectedEngagementDashOffset}"
-                                      stroke="#75BB7D" />
+                                      stroke="${getColor(Math.round(projectedEngagement))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedEngagementDashOffset}"
+                                      stroke="${getColor(Math.round(projectedEngagement))}" />
                                 <!-- Percentage Text -->
                                 <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
                                       fill="#173248">${projectedEngagement}%</text>
@@ -761,8 +806,8 @@
                                 <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
                                 <!-- Fill Arc -->
                                 <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="#75BB7D" stroke-dasharray="367.566" stroke-dashoffset="${projectedReturnOnLaborDashOffset}"
-                                      stroke="#75BB7D" />
+                                      stroke="${getColor(Math.round( (projectedReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedReturnOnLaborDashOffset}"
+                                      stroke="${getColor(Math.round( (projectedReturnOnLabor / laborCost) * 100 ))}" />
                                 <!-- Percentage Text -->
                                 <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
                                       fill="#173248">${Math.round( (projectedReturnOnLabor / laborCost) * 100 )}%</text>
@@ -780,7 +825,7 @@
                 <!-- Conclusion Section Header -->
                 <h3 class="blue-header">Conclusion:</h3>
                 
-               <!-- Dynamic Paragraph Below Conclusion -->
+                <!-- Dynamic Paragraph Below Conclusion -->
                 <div class="dynamic-paragraph">
                     <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
                 </div>
@@ -790,6 +835,9 @@
                     <h3 class="total-additional-profit">Total Additional Profit (Annual):</h3>
                     <p class="black">${formatCurrency(additionalProfit)}</p>
                 </div>
+                
+                <!-- Download PDF Button -->
+                <button class="download-pdf-button" id="downloadPDFButton">Download Report as PDF</button>
             `;
 
             // Inject report content into the modal
@@ -797,6 +845,28 @@
 
             // Display the modal
             reportModal.style.display = 'block';
+
+            // Add event listener for Download PDF button
+            const downloadPDFButton = document.getElementById('downloadPDFButton');
+            if (downloadPDFButton) {
+                downloadPDFButton.addEventListener('click', function() {
+                    // Use html2canvas to capture the reportContent
+                    html2canvas(reportContent, { scale: 2 }).then(canvas => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'px',
+                            format: [canvas.width, canvas.height]
+                        });
+                        doc.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                        doc.save('Projected_Financial_Impact_Report.pdf');
+                    }).catch(err => {
+                        console.error('Failed to generate PDF:', err);
+                        alert('An error occurred while generating the PDF. Please try again.');
+                    });
+                });
+            }
         });
 
         // Close Modal When 'x' is Clicked
