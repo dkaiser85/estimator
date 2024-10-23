@@ -891,17 +891,42 @@
                     html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
                         const imgData = canvas.toDataURL('image/png');
 
-                        // **Corrected jsPDF Instantiation and Changed Format to 'letter'**
+                        // **Define Margins and Page Dimensions**
+                        const marginLeft = 18; // 0.25in *72pt/in = 18pt
+                        const marginTop = 18;  // 0.25in
+                        const marginRight = 18; // 0.25in
+                        const marginBottom = 36; // 0.5in
+
+                        const pageWidth = 612; // 8.5in *72pt/in =612pt
+                        const pageHeight = 792; //11in *72pt/in =792pt
+
+                        const contentWidth = pageWidth - marginLeft - marginRight; //576pt
+                        const contentHeight = pageHeight - marginTop - marginBottom; //738pt
+
+                        // **Instantiate jsPDF with 'letter' format**
                         const pdf = new window.jspdf.jsPDF({
                             orientation: 'portrait',
                             unit: 'pt',
                             format: 'letter' // Changed from 'a4' to 'letter' for 8.5x11 inches
                         });
 
-                        const imgProps = pdf.getImageProperties(imgData);
-                        const pdfWidth = pdf.internal.pageSize.getWidth();
-                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        // **Calculate Image Dimensions to Fit Within Margins**
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+
+                        // Calculate the scaling factor to fit the image within the content area
+                        const scale = Math.min(contentWidth / imgWidth, contentHeight / imgHeight);
+
+                        // Calculate the scaled width and height
+                        const scaledWidth = imgWidth * scale;
+                        const scaledHeight = imgHeight * scale;
+
+                        // Calculate the position to center the image within the content area
+                        const x = marginLeft + (contentWidth - scaledWidth) / 2;
+                        const y = marginTop + (contentHeight - scaledHeight) / 2;
+
+                        // **Add the Image to PDF with Calculated Dimensions and Position**
+                        pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
                         pdf.save('Projected_Financial_Impact_Report.pdf');
 
                         // Show elements again
