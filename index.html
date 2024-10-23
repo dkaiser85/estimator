@@ -761,7 +761,8 @@
             // Generate report content based on supplied text
             const reportHTML = `
                 <div class="logo">
-                    <img src="https://static.showit.co/file/UwdjWfwfRQ-XzVtd8ECO4g/176740/cmri_blue_for_dk.png" alt="The Culture MRI® Logo">
+                    <!-- Replace the src with your Base64 encoded image -->
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." alt="The Culture MRI® Logo">
                 </div>
                 <hr class="horizontal-line">
                 <h2>Projected Financial Impact For Your Company</h2>
@@ -775,40 +776,7 @@
                 
                 <!-- Insert Current Engagement Gauge, Return-On-Labor® Gauge, and Annualized Lost Labor in 3 Columns -->
                 <div class="results-section">
-                    <div class="result-item">
-                        <h3>Overall Engagement</h3>
-                        <div class="gauge">
-                            <svg width="150" height="150" viewBox="0 0 195 195">
-                                <!-- Background Arc -->
-                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
-                                <!-- Fill Arc -->
-                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="${getColor(Math.round(engagementPercentage))}" stroke-dasharray="367.566" stroke-dashoffset="${currentEngagementDashOffset}" />
-                                <!-- Percentage Text -->
-                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
-                                      fill="#173248">${Math.round(engagementPercentage)}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="result-item">
-                        <h3>Return-On-Labor®</h3>
-                        <div class="gauge">
-                            <svg width="150" height="150" viewBox="0 0 195 195">
-                                <!-- Background Arc -->
-                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
-                                <!-- Fill Arc -->
-                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="${getColor(Math.round( (currentReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${currentReturnOnLaborDashOffset}" />
-                                <!-- Percentage Text -->
-                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
-                                      fill="#173248">${Math.round( (currentReturnOnLabor / laborCost) * 100 )}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="result-item annualized-lost-labor">
-                        <h3>Annualized Lost Labor</h3>
-                        <p class="red">${formatCurrency(currentAnnualizedLostLabor)}</p>
-                    </div>
+                    <!-- Your existing gauge and result items -->
                 </div>
                 
                 <!-- After Section Header -->
@@ -818,40 +786,7 @@
                 
                 <!-- Insert Projected Engagement Gauge, Return-On-Labor® Gauge, and Annualized Lost Labor in 3 Columns -->
                 <div class="results-section">
-                    <div class="result-item">
-                        <h3>Overall Engagement</h3>
-                        <div class="gauge">
-                            <svg width="150" height="150" viewBox="0 0 195 195">
-                                <!-- Background Arc -->
-                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
-                                <!-- Fill Arc -->
-                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="${getColor(Math.round(projectedEngagement))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedEngagementDashOffset}" />
-                                <!-- Percentage Text -->
-                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
-                                      fill="#173248">${projectedEngagement}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="result-item">
-                        <h3>Return-On-Labor®</h3>
-                        <div class="gauge">
-                            <svg width="150" height="150" viewBox="0 0 195 195">
-                                <!-- Background Arc -->
-                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
-                                <!-- Fill Arc -->
-                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="${getColor(Math.round( (projectedReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedReturnOnLaborDashOffset}" />
-                                <!-- Percentage Text -->
-                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
-                                      fill="#173248">${Math.round( (projectedReturnOnLabor / laborCost) * 100 )}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="result-item annualized-lost-labor">
-                        <h3>Annualized Lost Labor</h3>
-                        <p class="red">${formatCurrency(projectedAnnualizedLostLabor)}</p>
-                    </div>
+                    <!-- Your existing gauge and result items -->
                 </div>
                 
                 <!-- Conclusion Section Header -->
@@ -868,11 +803,16 @@
                     <p class="black">${formatCurrency(additionalProfit)}</p>
                 </div>
                 
+                <!-- Footer Logo (Optional) -->
+                <div class="footer-logo">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." alt="The Culture MRI® Logo">
+                </div>
+                
                 <!-- Download PDF Button -->
                 <button class="download-pdf-button no-pdf" id="downloadPDFButton">Download Sample Analysis Report</button>
             `;
 
-            // **Inject report content into the modal**
+            // Inject report content into the modal
             reportContent.innerHTML = reportHTML;
 
             // **Add Watermark Divs at 25%, 50%, and 75% of the Page**
@@ -880,7 +820,7 @@
                 {
                     title: "SAMPLE PROFITABILITY REPORT",
                     subtitle: "– BASED ON PROJECTIONS ONLY",
-                    top: "15%"
+                    top: "25%"
                 },
                 {
                     title: "SAMPLE PROFITABILITY REPORT",
@@ -890,7 +830,7 @@
                 {
                     title: "SAMPLE PROFITABILITY REPORT",
                     subtitle: "– BASED ON PROJECTIONS ONLY",
-                    top: "85%"
+                    top: "75%"
                 }
             ];
 
@@ -908,7 +848,7 @@
                 reportContent.appendChild(watermarkDiv);
             });
 
-            // **Inject CSS Styles for Watermark (Ensure this is added only once)**
+            // **Inject CSS Styles for Watermark and Footer Logo (Ensure this is added only once)**
             if (!document.getElementById('watermarkStyles')) {
                 const watermarkStyle = document.createElement('style');
                 watermarkStyle.id = 'watermarkStyles';
@@ -941,6 +881,18 @@
                         color: #555;
                         border-top: 1px solid #ccc;
                         padding-top: 10px;
+                    }
+
+                    /* Footer Logo Styling */
+                    .report-content .footer-logo {
+                        text-align: center; /* Centered footer logo */
+                        margin-top: 30px; /* Adjust spacing as needed */
+                    }
+
+                    .report-content .footer-logo img {
+                        max-width: 100px; /* Smaller size for footer */
+                        height: auto;
+                        display: inline-block;
                     }
                 `;
                 document.head.appendChild(watermarkStyle);
@@ -1015,18 +967,18 @@
                     });
                 });
             }
-        });
 
-        // Close Modal When 'x' is Clicked
-        closeButton.addEventListener('click', function() {
-            reportModal.style.display = 'none';
-        });
-
-        // Close Modal When Clicking Outside the Modal Content
-        window.addEventListener('click', function(event) {
-            if (event.target == reportModal) {
+            // Close Modal When 'x' is Clicked
+            closeButton.addEventListener('click', function() {
                 reportModal.style.display = 'none';
-            }
+            });
+
+            // Close Modal When Clicking Outside the Modal Content
+            window.addEventListener('click', function(event) {
+                if (event.target == reportModal) {
+                    reportModal.style.display = 'none';
+                }
+            });
         });
     });
 </script>
