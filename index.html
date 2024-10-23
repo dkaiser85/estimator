@@ -854,194 +854,181 @@
                     </div>
                 </div>
                 
-                <!-- Conclusion Section Header -->
-                <h3 class="blue-header">Conclusion:</h3>
-                
-                <!-- Dynamic Paragraph Below Conclusion -->
-                <div class="dynamic-paragraph">
-                    <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
-                </div>
-                
-                <!-- Total Additional Profit (Annual): -->
-                <div class="financial-metrics-center">
-                    <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
-                    <p class="black">${formatCurrency(additionalProfit)}</p>
-                </div>
-                
-                <!-- Download PDF Button -->
-                <button class="download-pdf-button no-pdf" id="downloadPDFButton">Download Sample Analysis Report</button>
-            `;
+             <!-- Conclusion Section Header -->
+<h3 class="blue-header">Conclusion:</h3>
 
-            // **Inject report content into the modal**
-            reportContent.innerHTML = reportHTML;
+<!-- Dynamic Paragraph Below Conclusion -->
+<div class="dynamic-paragraph">
+    <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
+</div>
 
-            // **Add Watermark Divs at 15%, 50%, and 85% of the Page**
-            const watermarkTexts = [
-                {
-                    title: "SAMPLE PROFITABILITY REPORT",
-                    subtitle: "– BASED ON PROJECTIONS ONLY",
-                    top: "15%"
-                },
-                {
-                    title: "SAMPLE PROFITABILITY REPORT",
-                    subtitle: "– BASED ON PROJECTIONS ONLY",
-                    top: "50%"
-                },
-                {
-                    title: "SAMPLE PROFITABILITY REPORT",
-                    subtitle: "– BASED ON PROJECTIONS ONLY",
-                    top: "85%"
-                }
-            ];
+<!-- Total Additional Profit (Annual): -->
+<div class="financial-metrics-center">
+    <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
+    <p class="black">${formatCurrency(additionalProfit)}</p>
+</div>
 
-            watermarkTexts.forEach((watermark, index) => {
-                const watermarkDiv = document.createElement('div');
-                watermarkDiv.classList.add('watermark');
-                watermarkDiv.innerHTML = `
-                    <div class="watermark-line">${watermark.title}</div>
-                    <div class="watermark-line">${watermark.subtitle}</div>
-                `;
-                // Set styles for each watermark
-                watermarkDiv.style.top = watermark.top; // 15%, 50%, 85%
-                watermarkDiv.style.left = '50%'; // Center horizontally
-                watermarkDiv.style.transform = 'translate(-50%, -50%) rotate(-40deg)';
-                reportContent.appendChild(watermarkDiv);
+<!-- Download PDF Button -->
+<button class="download-pdf-button no-pdf" id="downloadPDFButton">Download Sample Analysis Report</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const reportModal = document.getElementById('reportModal');
+    const reportContent = document.getElementById('reportContent');
+    const closeButton = document.getElementById('closeButton');
+    
+    // Inject report content into the modal
+    const reportHTML = `
+        <!-- Conclusion Section Header -->
+        <h3 class="blue-header">Conclusion:</h3>
+
+        <!-- Dynamic Paragraph Below Conclusion -->
+        <div class="dynamic-paragraph">
+            <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
+        </div>
+
+        <!-- Total Additional Profit (Annual): -->
+        <div class="financial-metrics-center">
+            <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
+            <p class="black">${formatCurrency(additionalProfit)}</p>
+        </div>
+    `;
+
+    reportContent.innerHTML = reportHTML;
+
+    // Add Watermark Divs at 15%, 50%, and 85% of the Page
+    const watermarkTexts = [
+        {
+            title: "SAMPLE PROFITABILITY REPORT",
+            subtitle: "– BASED ON PROJECTIONS ONLY",
+            top: "15%"
+        },
+        {
+            title: "SAMPLE PROFITABILITY REPORT",
+            subtitle: "– BASED ON PROJECTIONS ONLY",
+            top: "50%"
+        },
+        {
+            title: "SAMPLE PROFITABILITY REPORT",
+            subtitle: "– BASED ON PROJECTIONS ONLY",
+            top: "85%"
+        }
+    ];
+
+    watermarkTexts.forEach(watermark => {
+        const watermarkDiv = document.createElement('div');
+        watermarkDiv.classList.add('watermark');
+        watermarkDiv.innerHTML = `
+            <div class="watermark-line">${watermark.title}</div>
+            <div class="watermark-line">${watermark.subtitle}</div>
+        `;
+        watermarkDiv.style.top = watermark.top;
+        watermarkDiv.style.left = '50%';
+        watermarkDiv.style.transform = 'translate(-50%, -50%) rotate(-40deg)';
+        reportContent.appendChild(watermarkDiv);
+    });
+
+    // Inject CSS Styles for Watermark and Footer Logo (Ensure this is added only once)
+    if (!document.getElementById('watermarkStyles')) {
+        const watermarkStyle = document.createElement('style');
+        watermarkStyle.id = 'watermarkStyles';
+        watermarkStyle.innerHTML = `
+            #reportContent {
+                position: relative;
+            }
+
+            .watermark {
+                position: absolute;
+                text-align: center;
+                color: rgba(200, 200, 200, 0.3);
+                pointer-events: none;
+                user-select: none;
+                z-index: 1000;
+                font-family: Arial, sans-serif;
+            }
+
+            .watermark-line {
+                font-size: 36px;
+                line-height: 1.2;
+            }
+
+            .footer-logo {
+                text-align: center;
+                margin-top: 30px;
+            }
+
+            .footer-logo img {
+                max-width: 100px;
+                height: auto;
+                display: inline-block;
+            }
+        `;
+        document.head.appendChild(watermarkStyle);
+    }
+
+    // Display the modal
+    reportModal.style.display = 'block';
+
+    // Add event listener for Download PDF button
+    const downloadPDFButton = document.getElementById('downloadPDFButton');
+    if (downloadPDFButton) {
+        downloadPDFButton.addEventListener('click', function () {
+            document.querySelectorAll('.no-pdf').forEach(function (element) {
+                element.style.display = 'none';
             });
 
-            // **Inject CSS Styles for Watermark and Footer Logo (Ensure this is added only once)**
-            if (!document.getElementById('watermarkStyles')) {
-                const watermarkStyle = document.createElement('style');
-                watermarkStyle.id = 'watermarkStyles';
-                watermarkStyle.innerHTML = `
-                    /* Ensure the reportContent container is positioned relatively */
-                    #reportContent {
-                        position: relative;
-                    }
+            html2canvas(reportContent, { scale: 3 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
 
-                    /* Watermark Styles */
-                    .watermark {
-                        position: absolute;
-                        text-align: center;
-                        color: rgba(200, 200, 200, 0.3); /* Light gray with 30% opacity */
-                        pointer-events: none; /* Allow clicks to pass through the watermark */
-                        user-select: none; /* Prevent text selection */
-                        z-index: 1000; /* Ensure it sits above other content */
-                        font-family: Arial, sans-serif; /* Consistent font */
-                    }
-
-                    .watermark-line {
-                        font-size: 36px; /* Adjust font size as needed */
-                        line-height: 1.2; /* Adjust spacing between lines */
-                    }
-
-                    /* Additional CSS for Disclaimer (if implemented) */
-                    .report-disclaimer {
-                        margin-top: 20px;
-                        font-size: 12px;
-                        color: #555;
-                        border-top: 1px solid #ccc;
-                        padding-top: 10px;
-                    }
-
-                    /* Footer Logo Styling */
-                    .footer-logo {
-                        text-align: center; /* Centered footer logo */
-                        margin-top: 30px; /* Adjust spacing as needed */
-                    }
-
-                    .footer-logo img {
-                        max-width: 100px; /* Smaller size for footer */
-                        height: auto;
-                        display: inline-block;
-                    }
-                `;
-                document.head.appendChild(watermarkStyle);
-            }
-
-            // **Display the modal**
-            reportModal.style.display = 'block';
-
-            // Add event listener for Download PDF button
-            const downloadPDFButton = document.getElementById('downloadPDFButton');
-            if (downloadPDFButton) {
-                downloadPDFButton.addEventListener('click', function() {
-                    // Hide elements with class 'no-pdf'
-                    document.querySelectorAll('.no-pdf').forEach(function(element) {
-                        element.style.display = 'none';
-                    });
-
-                    // Use html2canvas to capture the reportContent
-                    html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
-                        const imgData = canvas.toDataURL('image/png');
-
-                        // **Define Margins and Page Dimensions**
-                        const marginLeft = 36; // 0.5in *72pt/in = 36pt
-                        const marginTop = 54;  // 0.75in * 72pt/in = 54pt
-                        const marginRight = marginRight = 36; // 0.5in * 72pt/in = 36pt
-                        const marginBottom = 36; // 0.5in * 72pt/in = 36pt
-
-                        const pageWidth = 612; // 8.5in *72pt/in =612pt
-                        const pageHeight = 792; //11in *72pt/in =792pt
-
-                        const contentWidth = pageWidth - marginLeft - marginRight; //540pt
-                        const contentHeight = pageHeight - marginTop - marginBottom; //702pt
-
-                        // **Instantiate jsPDF with 'letter' format**
-                        const pdf = new window.jspdf.jsPDF({
-                            orientation: 'portrait',
-                            unit: 'pt',
-                            format: 'letter' // Changed from 'a4' to 'letter' for 8.5x11 inches
-                        });
-
-                        // **Calculate Image Dimensions to Fit Within Margins**
-                        const imgWidth = canvas.width;
-                        const imgHeight = canvas.height;
-
-                        // Calculate the scaling factor to fit the image within the content area
-                        const scaleFactor = Math.min(contentWidth / imgWidth, contentHeight / imgHeight);
-
-                        // Calculate the scaled width and height
-                        const scaledWidth = imgWidth * scaleFactor;
-                        const scaledHeight = imgHeight * scaleFactor;
-
-                        // Calculate the position to center the image within the content area
-                        const x = marginLeft + (contentWidth - scaledWidth) / 2;
-                        const y = marginTop + (contentHeight - scaledHeight) / 2;
-
-                        // **Add the Image to PDF with Calculated Dimensions and Position**
-                        pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
-
-                        // **Save the PDF**
-                        pdf.save('Projected_Financial_Impact_Report.pdf');
-
-                        // Show elements again
-                        document.querySelectorAll('.no-pdf').forEach(function(element) {
-                            element.style.display = '';
-                        });
-
-                        // Hide the Download Button after download
-                        downloadPDFButton.style.display = 'none';
-                    }).catch(err => {
-                        console.error('Failed to generate PDF:', err);
-                        alert('An error occurred while generating the PDF. Please try again.');
-                    });
+                const pdf = new window.jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'pt',
+                    format: 'letter'
                 });
-            }
-        });
 
-        // Close Modal When 'x' is Clicked
-        closeButton.addEventListener('click', function() {
-            reportModal.style.display = 'none';
-        });
+                const marginLeft = 36;
+                const marginTop = 54;
+                const marginRight = 36;
+                const marginBottom = 36;
+                const pageWidth = 612;
+                const pageHeight = 792;
+                const contentWidth = pageWidth - marginLeft - marginRight;
+                const contentHeight = pageHeight - marginTop - marginBottom;
 
-        // Close Modal When Clicking Outside the Modal Content
-        window.addEventListener('click', function(event) {
-            if (event.target == reportModal) {
-                reportModal.style.display = 'none';
-            }
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const scaleFactor = Math.min(contentWidth / imgWidth, contentHeight / imgHeight);
+                const scaledWidth = imgWidth * scaleFactor;
+                const scaledHeight = imgHeight * scaleFactor;
+
+                const x = marginLeft + (contentWidth - scaledWidth) / 2;
+                const y = marginTop + (contentHeight - scaledHeight) / 2;
+
+                pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
+                pdf.save('Projected_Financial_Impact_Report.pdf');
+
+                document.querySelectorAll('.no-pdf').forEach(function (element) {
+                    element.style.display = '';
+                });
+
+                downloadPDFButton.style.display = 'none';
+            }).catch(err => {
+                console.error('Failed to generate PDF:', err);
+                alert('An error occurred while generating the PDF. Please try again.');
+            });
         });
+    }
+
+    // Close Modal When 'x' is Clicked
+    closeButton.addEventListener('click', function () {
+        reportModal.style.display = 'none';
     });
-</script>
 
-</body>
-</html>
+    // Close Modal When Clicking Outside the Modal Content
+    window.addEventListener('click', function (event) {
+        if (event.target === reportModal) {
+            reportModal.style.display = 'none';
+        }
+    });
+});
+</script>
