@@ -875,7 +875,7 @@
             // **Inject report content into the modal**
             reportContent.innerHTML = reportHTML;
 
-            // **Add Watermark Divs at 25%, 50%, and 75% of the Page**
+            // **Add Watermark Divs at 15%, 50%, and 85% of the Page**
             const watermarkTexts = [
                 {
                     title: "SAMPLE PROFITABILITY REPORT",
@@ -902,7 +902,7 @@
                     <div class="watermark-line">${watermark.subtitle}</div>
                 `;
                 // Set styles for each watermark
-                watermarkDiv.style.top = watermark.top; // 25%, 50%, 75%
+                watermarkDiv.style.top = watermark.top; // 15%, 50%, 85%
                 watermarkDiv.style.left = '50%'; // Center horizontally
                 watermarkDiv.style.transform = 'translate(-50%, -50%) rotate(-40deg)';
                 reportContent.appendChild(watermarkDiv);
