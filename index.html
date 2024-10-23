@@ -311,8 +311,22 @@
             text-align: center;
         }
 
-        .report-content .result-item h3 {
-            margin-bottom: 5px;
+        .report-content .result-item.annualized-lost-labor {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-content .result-item.annualized-lost-labor h3,
+        .report-content .result-item.annualized-lost-labor p.red {
+            margin: 0;
+        }
+
+        .report-content .result-item.annualized-lost-labor p.red {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #ED5C5C;
         }
 
         /* Center "Annualized Lost Labor" Below Gauges */
@@ -765,7 +779,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="result-item">
+                    <div class="result-item annualized-lost-labor">
                         <h3>Annualized Lost Labor</h3>
                         <p class="red">${formatCurrency(currentAnnualizedLostLabor)}</p>
                     </div>
@@ -808,7 +822,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="result-item">
+                    <div class="result-item annualized-lost-labor">
                         <h3>Annualized Lost Labor</h3>
                         <p class="red">${formatCurrency(projectedAnnualizedLostLabor)}</p>
                     </div>
