@@ -978,7 +978,7 @@ DK 10_23: Working-Dynamic including working SAMPLE REPORT with WATERMARKS and LO
 
                         // **Define Margins and Page Dimensions**
                         const marginLeft = 36; // 0.5in *72pt/in = 36pt
-                        const marginTop = 36;  // 0.5in * 72pt/in = 36pt
+                        const marginTop = 54;  // 0.75in * 72pt/in = 54pt
                         const marginRight = marginRight = 36; // 0.5in * 72pt/in = 36pt
                         const marginBottom = 36; // 0.5in * 72pt/in = 36pt
 
@@ -986,7 +986,7 @@ DK 10_23: Working-Dynamic including working SAMPLE REPORT with WATERMARKS and LO
                         const pageHeight = 792; //11in *72pt/in =792pt
 
                         const contentWidth = pageWidth - marginLeft - marginRight; //540pt
-                        const contentHeight = pageHeight - marginTop - marginBottom; //720pt
+                        const contentHeight = pageHeight - marginTop - marginBottom; //702pt
 
                         // **Instantiate jsPDF with 'letter' format**
                         const pdf = new window.jspdf.jsPDF({
@@ -1345,7 +1345,7 @@ DK 10_22: Working-Dynamic including working SAMPLE REPORT
         }
 
         .report-content .subtext {
-            font-size: 14px;
+            font-size: 18px;
             color: #6B7D8D;
         }
 
