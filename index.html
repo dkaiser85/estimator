@@ -563,6 +563,571 @@
     </div>
 </div>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jsPDF and html2canvas Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Apply Inter Font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            padding: 0 20px; /* Keep padding for consistent styling */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 400; /* Inter Regular */
+            border: 1px solid #d3d3d3;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* Generate Report Button */
+        #generateReportButton {
+            width: 75%;
+            padding: 12px;
+            background-color: #6666c6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #generateReportButton:hover {
+            background-color: #496691;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px;
+            height: 195px;
+            position: relative;
+            margin: 0 auto 10px; /* Reduced margin-bottom if necessary */
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        .financial-item p.black {
+            color: #000000; /* New class for black color */
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+        }
+
+        .liner-note .footnote {
+            margin-top: 10px; /* Adjust the value as needed */
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px;
+                height: 156px;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+
+            /* Added responsive styles for financial-metrics-center */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
+            }
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(243,243,243,0.96); /* Light background with opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 0px solid #888;
+            width: 90%; /* Adjusted for better mobile view */
+            max-width: 800px; /* Limit width on large screens */
+            border-radius: 10px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+/* Watermark Styles */
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 80px;
+    color: rgba(200, 200, 200, 0.3); /* Light gray with 30% opacity */
+    pointer-events: none; /* Allow clicks to pass through the watermark */
+    user-select: none; /* Prevent text selection */
+    white-space: nowrap; /* Prevent text wrapping */
+    z-index: 1000; /* Ensure it sits above other content */
+}
+
+        /* Report Content Styling */
+        .report-content {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        .report-content h2 {
+            text-align: left; /* Changed from center to left */
+            color: #406795; /* Changed to supplied blue */
+            margin-bottom: 20px;
+            font-size: 30px; /* Increased font size */
+        }
+
+        .report-content h3.blue-header {
+            color: #406795; /* Supplied blue color */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 30px; /* Increased font size */
+        }
+
+        .report-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .report-content .highlight {
+            font-weight: 700;
+            color: #173248;
+        }
+
+        .report-content .subtext {
+            font-size: 14px;
+            color: #6B7D8D;
+        }
+
+        /* Logo Styling in Report */
+        .report-content .logo {
+            text-align: left; /* Left justified */
+            margin-bottom: 10px; /* Reduced margin to accommodate the line */
+        }
+
+        .report-content .logo img {
+            max-width: 175px; /* 2x larger than previous 150px */
+            height: auto;
+        }
+
+        /* Horizontal Line Below Logo */
+        .report-content .horizontal-line {
+            border: 0;
+            height: 1px;
+            background-color: #406795; /* Same blue as headers */
+            margin: 10px 0 20px 0; /* Spacing around the line */
+            width: 100%;
+        }
+
+        /* Additional Modal-Specific Styling */
+        .report-content .results-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 10px 0; /* Shortened from 20px to 10px */
+        }
+
+        .report-content .result-item {
+            width: 30%; /* Adjusted for 3 columns */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .report-content .result-item.annualized-lost-labor {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-content .result-item.annualized-lost-labor h3,
+        .report-content .result-item.annualized-lost-labor p.red {
+            margin: 0;
+        }
+
+        .report-content .result-item.annualized-lost-labor p.red {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #ED5C5C;
+        }
+
+        /* Flexbox for financial-metrics-center to align header and number on the same line */
+        .report-content .financial-metrics-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            text-align: center; /* Ensures text is centered when on the same line */
+            margin-top: 15px;
+        }
+
+        /* Add spacing between the header and the number */
+        .report-content .financial-metrics-center h3.total-additional-profit {
+            text-transform: uppercase; /* ALL CAPS */
+            font-weight: 500;          /* Bold (Inter Semi Bold approximated with 700) */
+            letter-spacing: -0.03em;   /* -0.02em letter-spacing */
+            color: #000000;            /* Black */
+            font-size: 24px;           /* Increased font size */
+            margin-right: 10px;        /* Adds space between text and number */
+        }
+
+        /* Ensure the number has the same font size as the headers */
+        .report-content .financial-metrics-center p.black {
+            font-size: 30px; /* Increased to match header */
+            font-weight: 500; /* Ensures boldness for emphasis */
+            color: #000000; /* Black color as specified */
+            margin: 0; /* Removes default margins */
+        }
+
+        /* Dynamic Paragraph Styling */
+        .report-content .dynamic-paragraph {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .report-content .dynamic-paragraph p {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        /* Download PDF Button Styling */
+        .report-content .download-pdf-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #6666c6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .report-content .download-pdf-button:hover {
+            background-color: #496691;
+        }
+
+        /* Adjust Gauge Size in Report */
+        .report-content .gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px; /* Center gauges */
+        }
+
+        @media (max-width: 600px) {
+            .report-content .result-item {
+                width: 100%;
+            }
+
+            .report-content .gauge {
+                width: 100%;
+                max-width: 150px;
+                margin: 0 auto 10px;
+            }
+
+            /* Stacks the header and number vertically on small screens */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <!-- Total Labor Spend Input -->
+        <div class="input-group">
+            <label for="totalLaborCost">Total Labor Spend (USD)</label>
+            <input type="text" id="totalLaborCost" placeholder="Enter your total labor spend">
+        </div>
+
+        <!-- Estimated Employee Engagement Input -->
+        <div class="input-group">
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+        </div>
+
+        <!-- Projected Turnover Percentage Input -->
+        <div class="input-group">
+            <label for="turnoverPercentage">Projected Turnover Percentage (%)</label>
+            <input type="number" id="turnoverPercentage" placeholder="Enter projected turnover percentage" min="0" max="100">
+        </div>
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="engagementText">0%</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">0%</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- A 1% Engagement Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- Annualized Total Losses with Turnover -->
+        <div class="financial-item">
+            <h3>Annualized Total Losses with Turnover</h3>
+            <p class="red" id="totalAnnualizedLosses">--</p>
+        </div>
+
+        <!-- Generate Report Button moved here -->
+        <div class="financial-item generate-report-group">
+            <button type="button" id="generateReportButton">Generate Projected Profitability Report</button>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div id="reportModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="report-content" id="reportContent">
+            <!-- Report content will be injected here -->
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // **Element References**
@@ -1082,6 +1647,9 @@
         });
     });
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
