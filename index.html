@@ -975,23 +975,7 @@
                         // **Add the Image to PDF with Calculated Dimensions and Position**
                         pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
 
-                        /*** Add Watermark to PDF ***/
-                        // Set font properties for watermark
-                        pdf.setFontSize(36);
-                        pdf.setTextColor(200, 200, 200); // Light gray color
-
-                        // Calculate the center of the page
-                        const centerX = pageWidth / 2;
-                        const centerY = pageHeight / 2;
-
-                        // Add first line of watermark text
-                        pdf.text('SAMPLE PROFITABILITY REPORT', centerX, centerY - 20, {
-                            align: 'center',
-                            angle: -45 // Rotate text by -45 degrees
-                        });
-
-                      
-
+                 
                         // **Save the PDF**
                         pdf.save('Projected_Financial_Impact_Report.pdf');
 
