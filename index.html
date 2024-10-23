@@ -209,6 +209,16 @@
             .financial-item p {
                 font-size: 18px;
             }
+
+            /* Added responsive styles for financial-metrics-center */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
+            }
         }
 
         /* Modal Styling */
@@ -271,7 +281,7 @@
             color: #406795; /* Supplied blue color */
             margin-top: 20px;
             margin-bottom: 10px;
-            font-size: 24px; /* Increased font size */
+            font-size: 30px; /* Increased font size */
         }
 
         .report-content p {
@@ -341,40 +351,32 @@
             color: #ED5C5C;
         }
 
-        /* Center "Annualized Lost Labor" Below Gauges */
+        /* Flexbox for financial-metrics-center to align header and number on the same line */
         .report-content .financial-metrics-center {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            text-align: center; /* Ensures text is centered when on the same line */
             margin-top: 15px;
         }
 
-        .report-content .financial-metrics-center h3 {
-            font-size: 18px;
-            font-weight: 300;
-            color: #6B7D8D;
-            margin-bottom: 5px;
-        }
-
-        .report-content .financial-metrics-center p.red {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ED5C5C;
-            margin: 0;
-        }
-
-        .report-content .financial-metrics-center p.black {
-            font-size: 20px;
-            font-weight: 700;
-            color: #000000; /* Black color for Conclusion */
-            margin: 0;
-        }
-
-        /* Specific Styling for "Total Additional Profit (Annual):" */
+        /* Add spacing between the header and the number */
         .report-content .financial-metrics-center h3.total-additional-profit {
             text-transform: uppercase; /* ALL CAPS */
             font-weight: 500;          /* Bold (Inter Semi Bold approximated with 700) */
-            letter-spacing: -0.02em;   /* -0.02em letter-spacing */
+            letter-spacing: -0.03em;   /* -0.02em letter-spacing */
             color: #000000;            /* Black */
             font-size: 24px;           /* Increased font size */
+            margin-right: 10px;        /* Adds space between text and number */
+        }
+
+        /* Ensure the number has the same font size as the headers */
+        .report-content .financial-metrics-center p.black {
+            font-size: 30px; /* Increased to match header */
+            font-weight: 500; /* Ensures boldness for emphasis */
+            color: #000000; /* Black color as specified */
+            margin: 0; /* Removes default margins */
         }
 
         /* Dynamic Paragraph Styling */
@@ -424,6 +426,16 @@
                 width: 100%;
                 max-width: 150px;
                 margin: 0 auto 10px;
+            }
+
+            /* Stacks the header and number vertically on small screens */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
             }
         }
 
@@ -852,7 +864,7 @@
                 
                 <!-- Total Additional Profit (Annual): -->
                 <div class="financial-metrics-center">
-                    <h3 class="total-additional-profit">Total Additional Profit (Annual):</h3>
+                    <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
                     <p class="black">${formatCurrency(additionalProfit)}</p>
                 </div>
                 
