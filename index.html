@@ -264,12 +264,14 @@
             text-align: left; /* Changed from center to left */
             color: #406795; /* Changed to supplied blue */
             margin-bottom: 20px;
+            font-size: 30px; /* Increased font size */
         }
 
         .report-content h3.blue-header {
             color: #406795; /* Supplied blue color */
             margin-top: 20px;
             margin-bottom: 10px;
+            font-size: 30px; /* Increased font size */
         }
 
         .report-content p {
@@ -289,12 +291,22 @@
 
         /* Logo Styling in Report */
         .report-content .logo {
-            text-align: center;
-            margin-bottom: 20px;
+            text-align: left; /* Left justified */
+            margin-bottom: 10px; /* Reduced margin to accommodate the line */
         }
 
         .report-content .logo img {
-            max-width: 150px;
+            max-width: 175px; /* 2x larger than previous 150px */
+            height: auto;
+        }
+
+        /* Horizontal Line Below Logo */
+        .report-content .horizontal-line {
+            border: 0;
+            height: 1px;
+            background-color: #406795; /* Same blue as headers */
+            margin: 10px 0 20px 0; /* Spacing around the line */
+            width: 100%;
         }
 
         /* Additional Modal-Specific Styling */
@@ -359,9 +371,10 @@
         /* Specific Styling for "Total Additional Profit (Annual):" */
         .report-content .financial-metrics-center h3.total-additional-profit {
             text-transform: uppercase; /* ALL CAPS */
-            font-weight: 700;          /* Bold (Inter Semi Bold approximated with 700) */
-            letter-spacing: -0.02em;   /* -0.07em letter-spacing */
+            font-weight: 500;          /* Bold (Inter Semi Bold approximated with 700) */
+            letter-spacing: -0.02em;   /* -0.02em letter-spacing */
             color: #000000;            /* Black */
+            font-size: 24px;           /* Increased font size */
         }
 
         /* Dynamic Paragraph Styling */
@@ -738,6 +751,7 @@
                 <div class="logo">
                     <img src="https://static.showit.co/file/UwdjWfwfRQ-XzVtd8ECO4g/176740/cmri_blue_for_dk.png" alt="The Culture MRI® Logo">
                 </div>
+                <hr class="horizontal-line">
                 <h2>Projected Financial Impact For Your Company</h2>
                 <p>These recommendations are designed to provide a lift within the culture of your company by addressing the reported appetite for stronger vision. While these action steps are only described briefly here, we look forward to discussing each detail with your team and providing additional guidance as needed.</p>
                 <p>Based on the rather conservative plan described in this report, your company can improve its Employee Value Proposition, better providing workers what they need to thrive and perform. This improvement requires no additional spending on salaries but maximizes the return on your current labor costs. The result will be higher productivity and profitability. Best of all, the impact will be measurable, not only in assessment scores, but also in financial results.</p>
@@ -843,7 +857,7 @@
                 </div>
                 
                 <!-- Download PDF Button -->
-                <button class="download-pdf-button" id="downloadPDFButton">Download Report as PDF</button>
+                <button class="download-pdf-button no-pdf" id="downloadPDFButton">Download Sample Analysis Report</button>
             `;
 
             // Inject report content into the modal
@@ -856,17 +870,32 @@
             const downloadPDFButton = document.getElementById('downloadPDFButton');
             if (downloadPDFButton) {
                 downloadPDFButton.addEventListener('click', function() {
+                    // Hide elements with class 'no-pdf'
+                    document.querySelectorAll('.no-pdf').forEach(function(element) {
+                        element.style.display = 'none';
+                    });
+
                     // Use html2canvas to capture the reportContent
-                    html2canvas(reportContent, { scale: 2 }).then(canvas => {
+                    html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
                         const imgData = canvas.toDataURL('image/png');
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF({
+                        const pdf = new jsPDF({
                             orientation: 'portrait',
-                            unit: 'px',
-                            format: [canvas.width, canvas.height]
+                            unit: 'pt',
+                            format: 'a4' // Standard A4 size
                         });
-                        doc.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                        doc.save('Projected_Financial_Impact_Report.pdf');
+                        const imgProps = pdf.getImageProperties(imgData);
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        pdf.save('Projected_Financial_Impact_Report.pdf');
+
+                        // Show elements again
+                        document.querySelectorAll('.no-pdf').forEach(function(element) {
+                            element.style.display = '';
+                        });
+
+                        // Hide the Download Button after download
+                        downloadPDFButton.style.display = 'none';
                     }).catch(err => {
                         console.error('Failed to generate PDF:', err);
                         alert('An error occurred while generating the PDF. Please try again.');
