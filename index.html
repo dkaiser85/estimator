@@ -549,7 +549,6 @@
     </div>
 </div>
 
-<!-- Include this script at the end of your HTML body or in a separate JS file -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const inputLaborCost = document.getElementById('totalLaborCost');
@@ -762,7 +761,7 @@
             // Generate report content based on supplied text
             const reportHTML = `
                 <div class="logo">
-                    <img src="images/CMRI.png" alt="The Culture MRI® Logo">
+                    <img src="https://static.showit.co/file/UwdjWfwfRQ-XzVtd8ECO4g/176740/cmri_blue_for_dk.png" alt="The Culture MRI® Logo">
                 </div>
                 <hr class="horizontal-line">
                 <h2>Projected Financial Impact For Your Company</h2>
@@ -867,11 +866,6 @@
                 <div class="financial-metrics-center">
                     <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
                     <p class="black">${formatCurrency(additionalProfit)}</p>
-                </div>
-                
-                <!-- Footer Logo (Optional) -->
-                <div class="footer-logo">
-                    <img src="images/CMRI.png" alt="The Culture MRI® Logo">
                 </div>
                 
                 <!-- Download PDF Button -->
@@ -1048,7 +1042,3 @@
         });
     });
 </script>
-
-</body>
-</html>
-
