@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -307,7 +306,7 @@
         }
 
         .report-content .logo img {
-            max-width: 225px; /* 2x larger than previous 150px */
+            max-width: 175px; /* 2x larger than previous 150px */
             height: auto;
         }
 
@@ -976,16 +975,16 @@
                         const imgData = canvas.toDataURL('image/png');
 
                         // **Define Margins and Page Dimensions**
-                        const marginLeft = 54;  // 0.75in * 72pt/in = 54pt
-                        const marginTop = 90;   // 1.25in * 72pt/in = 90pt
-                        const marginRight = 54; // 0.75in * 72pt/in = 54pt
-                        const marginBottom = 36; // 0.5in * 72pt/in = 36pt
+                        const marginLeft = 18; // 0.25in *72pt/in = 18pt
+                        const marginTop = 18;  // 0.25in
+                        const marginRight = 18; // 0.25in
+                        const marginBottom = 36; // 0.5in
 
                         const pageWidth = 612; // 8.5in *72pt/in =612pt
                         const pageHeight = 792; //11in *72pt/in =792pt
 
-                        const contentWidth = pageWidth - marginLeft - marginRight; //504pt
-                        const contentHeight = pageHeight - marginTop - marginBottom; //666pt
+                        const contentWidth = pageWidth - marginLeft - marginRight; //576pt
+                        const contentHeight = pageHeight - marginTop - marginBottom; //738pt
 
                         // **Instantiate jsPDF with 'letter' format**
                         const pdf = new window.jspdf.jsPDF({
@@ -1043,3 +1042,6 @@
         });
     });
 </script>
+
+</body>
+</html>
