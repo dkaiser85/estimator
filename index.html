@@ -890,14 +890,14 @@
                     // Use html2canvas to capture the reportContent
                     html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
                         const imgData = canvas.toDataURL('image/png');
-                        
-                        // **Corrected jsPDF Instantiation**
+
+                        // **Corrected jsPDF Instantiation and Changed Format to 'letter'**
                         const pdf = new window.jspdf.jsPDF({
                             orientation: 'portrait',
                             unit: 'pt',
-                            format: 'a4' // Standard A4 size
+                            format: 'letter' // Changed from 'a4' to 'letter' for 8.5x11 inches
                         });
-                        
+
                         const imgProps = pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
                         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
