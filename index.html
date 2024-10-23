@@ -1,3 +1,5 @@
+DK 10_23: Working-Dynamic including working SAMPLE REPORT with WATERMARKS and LOGOS
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -975,16 +977,16 @@
                         const imgData = canvas.toDataURL('image/png');
 
                         // **Define Margins and Page Dimensions**
-                        const marginLeft = 18; // 0.25in *72pt/in = 18pt
-                        const marginTop = 18;  // 0.25in
-                        const marginRight = 18; // 0.25in
-                        const marginBottom = 36; // 0.5in
+                        const marginLeft = 36; // 0.5in *72pt/in = 36pt
+                        const marginTop = 36;  // 0.5in * 72pt/in = 36pt
+                        const marginRight = marginRight = 36; // 0.5in * 72pt/in = 36pt
+                        const marginBottom = 36; // 0.5in * 72pt/in = 36pt
 
                         const pageWidth = 612; // 8.5in *72pt/in =612pt
                         const pageHeight = 792; //11in *72pt/in =792pt
 
-                        const contentWidth = pageWidth - marginLeft - marginRight; //576pt
-                        const contentHeight = pageHeight - marginTop - marginBottom; //738pt
+                        const contentWidth = pageWidth - marginLeft - marginRight; //540pt
+                        const contentHeight = pageHeight - marginTop - marginBottom; //720pt
 
                         // **Instantiate jsPDF with 'letter' format**
                         const pdf = new window.jspdf.jsPDF({
@@ -1045,3 +1047,3432 @@
 
 </body>
 </html>
+DK 10_22: Working-Dynamic including working SAMPLE REPORT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jsPDF and html2canvas Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Apply Inter Font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            padding: 0 20px; /* Keep padding for consistent styling */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 400; /* Inter Regular */
+            border: 1px solid #d3d3d3;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* Generate Report Button */
+        #generateReportButton {
+            width: 75%;
+            padding: 12px;
+            background-color: #6666c6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #generateReportButton:hover {
+            background-color: #496691;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px;
+            height: 195px;
+            position: relative;
+            margin: 0 auto 10px; /* Reduced margin-bottom if necessary */
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        .financial-item p.black {
+            color: #000000; /* New class for black color */
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+        }
+
+        .liner-note .footnote {
+            margin-top: 10px; /* Adjust the value as needed */
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px;
+                height: 156px;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+
+            /* Added responsive styles for financial-metrics-center */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
+            }
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(243,243,243,0.96); /* Light background with opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% from the top and centered */
+            padding: 20px;
+            border: 0px solid #888;
+            width: 90%; /* Adjusted for better mobile view */
+            max-width: 800px; /* Limit width on large screens */
+            border-radius: 10px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Report Content Styling */
+        .report-content {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        .report-content h2 {
+            text-align: left; /* Changed from center to left */
+            color: #406795; /* Changed to supplied blue */
+            margin-bottom: 20px;
+            font-size: 30px; /* Increased font size */
+        }
+
+        .report-content h3.blue-header {
+            color: #406795; /* Supplied blue color */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 30px; /* Increased font size */
+        }
+
+        .report-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .report-content .highlight {
+            font-weight: 700;
+            color: #173248;
+        }
+
+        .report-content .subtext {
+            font-size: 14px;
+            color: #6B7D8D;
+        }
+
+        /* Logo Styling in Report */
+        .report-content .logo {
+            text-align: left; /* Left justified */
+            margin-bottom: 10px; /* Reduced margin to accommodate the line */
+        }
+
+        .report-content .logo img {
+            max-width: 175px; /* 2x larger than previous 150px */
+            height: auto;
+        }
+
+        /* Horizontal Line Below Logo */
+        .report-content .horizontal-line {
+            border: 0;
+            height: 1px;
+            background-color: #406795; /* Same blue as headers */
+            margin: 10px 0 20px 0; /* Spacing around the line */
+            width: 100%;
+        }
+
+        /* Additional Modal-Specific Styling */
+        .report-content .results-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 10px 0; /* Shortened from 20px to 10px */
+        }
+
+        .report-content .result-item {
+            width: 30%; /* Adjusted for 3 columns */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .report-content .result-item.annualized-lost-labor {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-content .result-item.annualized-lost-labor h3,
+        .report-content .result-item.annualized-lost-labor p.red {
+            margin: 0;
+        }
+
+        .report-content .result-item.annualized-lost-labor p.red {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #ED5C5C;
+        }
+
+        /* Flexbox for financial-metrics-center to align header and number on the same line */
+        .report-content .financial-metrics-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            text-align: center; /* Ensures text is centered when on the same line */
+            margin-top: 15px;
+        }
+
+        /* Add spacing between the header and the number */
+        .report-content .financial-metrics-center h3.total-additional-profit {
+            text-transform: uppercase; /* ALL CAPS */
+            font-weight: 500;          /* Bold (Inter Semi Bold approximated with 700) */
+            letter-spacing: -0.03em;   /* -0.02em letter-spacing */
+            color: #000000;            /* Black */
+            font-size: 24px;           /* Increased font size */
+            margin-right: 10px;        /* Adds space between text and number */
+        }
+
+        /* Ensure the number has the same font size as the headers */
+        .report-content .financial-metrics-center p.black {
+            font-size: 30px; /* Increased to match header */
+            font-weight: 500; /* Ensures boldness for emphasis */
+            color: #000000; /* Black color as specified */
+            margin: 0; /* Removes default margins */
+        }
+
+        /* Dynamic Paragraph Styling */
+        .report-content .dynamic-paragraph {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .report-content .dynamic-paragraph p {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        /* Download PDF Button Styling */
+        .report-content .download-pdf-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #6666c6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .report-content .download-pdf-button:hover {
+            background-color: #496691;
+        }
+
+        /* Adjust Gauge Size in Report */
+        .report-content .gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px; /* Center gauges */
+        }
+
+        @media (max-width: 600px) {
+            .report-content .result-item {
+                width: 100%;
+            }
+
+            .report-content .gauge {
+                width: 100%;
+                max-width: 150px;
+                margin: 0 auto 10px;
+            }
+
+            /* Stacks the header and number vertically on small screens */
+            .financial-metrics-center {
+                flex-direction: column; /* Stacks items vertically on small screens */
+            }
+
+            .financial-metrics-center h3.total-additional-profit,
+            .financial-metrics-center p.black {
+                margin-right: 0; /* Removes right margin when stacked */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <!-- Total Labor Spend Input -->
+        <div class="input-group">
+            <label for="totalLaborCost">Total Labor Spend (USD)</label>
+            <input type="text" id="totalLaborCost" placeholder="Enter your total labor spend">
+        </div>
+
+        <!-- Estimated Employee Engagement Input -->
+        <div class="input-group">
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+        </div>
+
+        <!-- Projected Turnover Percentage Input -->
+        <div class="input-group">
+            <label for="turnoverPercentage">Projected Turnover Percentage (%)</label>
+            <input type="number" id="turnoverPercentage" placeholder="Enter projected turnover percentage" min="0" max="100">
+        </div>
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="engagementText">0%</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">0%</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- A 1% Engagement Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- Annualized Total Losses with Turnover -->
+        <div class="financial-item">
+            <h3>Annualized Total Losses with Turnover</h3>
+            <p class="red" id="totalAnnualizedLosses">--</p>
+        </div>
+
+        <!-- Generate Report Button moved here -->
+        <div class="financial-item generate-report-group">
+            <button type="button" id="generateReportButton">Generate Projected Profitability Analysis Report</button>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div id="reportModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="report-content" id="reportContent">
+            <!-- Report content will be injected here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+        const inputEngagement = document.getElementById('employeeEngagement');
+        const inputTurnover = document.getElementById('turnoverPercentage');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+        const totalAnnualizedLossesEl = document.getElementById('totalAnnualizedLosses');
+
+        const generateReportButton = document.getElementById('generateReportButton');
+
+        // Modal elements
+        const reportModal = document.getElementById('reportModal');
+        const closeButton = document.querySelector('.close-button');
+        const reportContent = document.getElementById('reportContent');
+
+        // Initialize gauges and displays
+        calculateMetrics();
+
+        // Add event listeners
+        inputLaborCost.addEventListener('input', function(e) {
+            // Remove non-digit characters except decimal point
+            const value = e.target.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+            // Format with commas
+            e.target.value = formatNumberWithCommas(value);
+            calculateMetrics();
+        });
+
+        inputEngagement.addEventListener('input', function() {
+            calculateMetrics();
+        });
+
+        inputTurnover.addEventListener('input', function() {
+            calculateMetrics();
+        });
+
+        function formatNumberWithCommas(number) {
+            if (!number) return '';
+            const parts = number.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // For radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function calculateMetrics() {
+            // Parse the labor cost input by removing commas
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
+            const engagementPercentage = parseFloat(inputEngagement.value);
+            const turnoverPercentage = parseFloat(inputTurnover.value);
+
+            // Constants
+            const averageSalary = 60000; // Assumed average salary
+            const costToReplaceOneEmployee = 9861; // Given average replacement cost
+
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100 ||
+                isNaN(turnoverPercentage) || turnoverPercentage < 0 || turnoverPercentage > 100
+            ) {
+                resetGauges();
+                return;
+            }
+
+            /*** Update Overall Engagement Gauge ***/
+            let engagementColor = '';
+
+            if (engagementPercentage <= 45) {
+                engagementColor = '#ED5C5C'; // Red
+            } else if (engagementPercentage <= 70) {
+                engagementColor = '#E1D687'; // Yellow
+            } else {
+                engagementColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(engagementFill, engagementPercentage, engagementColor);
+            engagementText.textContent = Math.round(engagementPercentage) + '%'; // Rounded
+
+            /*** Calculate Return-On-Labor® ***/
+            const engagementFactor = (0.46 * (engagementPercentage / 100)) + 0.54;
+            const returnOnLabor = engagementFactor * laborCost;
+            const returnOnLaborPercentage = Math.round( (returnOnLabor / laborCost) * 100 ); // Rounded
+
+            let returnOnLaborColor = '';
+
+            if (returnOnLaborPercentage <= 45) {
+                returnOnLaborColor = '#ED5C5C'; // Red
+            } else if (returnOnLaborPercentage <= 70) {
+                returnOnLaborColor = '#E1D687'; // Yellow
+            } else {
+                returnOnLaborColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
+            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%'; // Rounded
+
+            /*** Update Financial Metrics ***/
+            const lostLaborCost = laborCost - returnOnLabor;
+            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`; // Rounded
+            lostLaborCostEl.textContent = formattedLostLaborCost;
+
+            const onePercentChange = Math.round(0.0046 * laborCost); // Rounded
+            const formattedOnePercentChange = `$${onePercentChange.toLocaleString('en-US')}`;
+            onePercentChangeEl.textContent = formattedOnePercentChange;
+
+            /*** Calculate Projected Turnover Costs ***/
+            // Estimate headcount
+            const estimatedHeadcount = laborCost / averageSalary;
+
+            // Convert turnover percentage to decimal
+            const turnoverDecimal = turnoverPercentage / 100;
+
+            // Projected Turnover Costs
+            const projectedTurnoverCosts = estimatedHeadcount * turnoverDecimal * costToReplaceOneEmployee;
+
+            /*** Calculate Total Annualized Losses ***/
+            const totalAnnualizedLosses = lostLaborCost + projectedTurnoverCosts;
+            const formattedTotalAnnualizedLosses = `-$${Math.round(totalAnnualizedLosses).toLocaleString('en-US')}`; // Rounded
+            totalAnnualizedLossesEl.textContent = formattedTotalAnnualizedLosses;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+            totalAnnualizedLossesEl.textContent = '--';
+        }
+
+        // Generate Report Button Click Event
+        generateReportButton.addEventListener('click', function() {
+            // Get current inputs
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
+            const engagementPercentage = parseFloat(inputEngagement.value);
+            const turnoverPercentage = parseFloat(inputTurnover.value);
+
+            // Validate inputs
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100 ||
+                isNaN(turnoverPercentage) || turnoverPercentage < 0 || turnoverPercentage > 100
+            ) {
+                alert("Please enter valid input values.");
+                return;
+            }
+
+            // Calculate current metrics
+            const currentEngagementFactor = (0.46 * (engagementPercentage / 100)) + 0.54;
+            const currentReturnOnLabor = currentEngagementFactor * laborCost;
+            const currentAnnualizedLostLabor = Math.round(laborCost - currentReturnOnLabor); // Rounded
+
+            // Calculate projected metrics with 10% higher engagement
+            const projectedEngagement = Math.min(engagementPercentage + 10, 100); // Cap at 100%
+            const projectedEngagementFactor = (0.46 * (projectedEngagement / 100)) + 0.54;
+            const projectedReturnOnLabor = projectedEngagementFactor * laborCost;
+            const projectedAnnualizedLostLabor = Math.round(laborCost - projectedReturnOnLabor); // Rounded
+
+            const additionalProfit = Math.round(currentAnnualizedLostLabor - projectedAnnualizedLostLabor); // Rounded
+
+            // Calculate investment and net gain
+            const investment = Math.round(additionalProfit / 3); // 1/3 of total additional profit
+            const netGain = additionalProfit; // As per user's example
+
+            // Format numbers with commas and no decimal places
+            function formatCurrency(num) {
+                return num.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            }
+
+            // Calculate stroke-dashoffset for gauges
+            const currentEngagementDashOffset = 367.566 - (Math.round(engagementPercentage) / 100) * 367.566;
+            const currentReturnOnLaborDashOffset = 367.566 - (Math.round( (currentReturnOnLabor / laborCost) * 100 )) * 367.566 / 100;
+
+            const projectedEngagementDashOffset = 367.566 - (Math.round(projectedEngagement) / 100) * 367.566;
+            const projectedReturnOnLaborDashOffset = 367.566 - (Math.round( (projectedReturnOnLabor / laborCost) * 100 )) * 367.566 / 100;
+
+            // Determine colors based on specified ranges
+            function getColor(percentage) {
+                if (percentage <= 45) {
+                    return '#ED5C5C'; // Red
+                } else if (percentage <= 70) {
+                    return '#E1D687'; // Yellow
+                } else {
+                    return '#75BB7D'; // Green
+                }
+            }
+
+            // Generate report content based on supplied text
+            const reportHTML = `
+                <div class="logo">
+                    <img src="https://static.showit.co/file/UwdjWfwfRQ-XzVtd8ECO4g/176740/cmri_blue_for_dk.png" alt="The Culture MRI® Logo">
+                </div>
+                <hr class="horizontal-line">
+                <h2>Projected Financial Impact For Your Company</h2>
+                <p>These recommendations are designed to provide a lift within the culture of your company by addressing the reported appetite for stronger vision. While these action steps are only described briefly here, we look forward to discussing each detail with your team and providing additional guidance as needed.</p>
+                <p>Based on the rather conservative plan described in this report, your company can improve its Employee Value Proposition, better providing workers what they need to thrive and perform. This improvement requires no additional spending on salaries but maximizes the return on your current labor costs. The result will be higher productivity and profitability. Best of all, the impact will be measurable, not only in assessment scores, but also in financial results.</p>
+                
+                <!-- Before Section Header -->
+                <h3 class="blue-header">Before:</h3>
+                
+                <p>Currently, you’re investing ${formatCurrency(laborCost)} annually in labor, but with a ${Math.round(engagementPercentage)}% engagement level, you’re losing ${formatCurrency(currentAnnualizedLostLabor)} in productivity each year. This is a significant hidden cost impacting your bottom line.</p>
+                
+                <!-- Insert Current Engagement Gauge, Return-On-Labor® Gauge, and Annualized Lost Labor in 3 Columns -->
+                <div class="results-section">
+                    <div class="result-item">
+                        <h3>Overall Engagement</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="${getColor(Math.round(engagementPercentage))}" stroke-dasharray="367.566" stroke-dashoffset="${currentEngagementDashOffset}" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round(engagementPercentage)}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Return-On-Labor®</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="${getColor(Math.round( (currentReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${currentReturnOnLaborDashOffset}" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round( (currentReturnOnLabor / laborCost) * 100 )}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item annualized-lost-labor">
+                        <h3>Annualized Lost Labor</h3>
+                        <p class="red">${formatCurrency(currentAnnualizedLostLabor)}</p>
+                    </div>
+                </div>
+                
+                <!-- After Section Header -->
+                <h3 class="blue-header">After:</h3>
+                
+                <p>By implementing targeted strategies and The Culture MRI® recommendations to elevate employee engagement to ${projectedEngagement}%, you will recover ${formatCurrency(additionalProfit)} annually from your existing labor investment.</p>
+                
+                <!-- Insert Projected Engagement Gauge, Return-On-Labor® Gauge, and Annualized Lost Labor in 3 Columns -->
+                <div class="results-section">
+                    <div class="result-item">
+                        <h3>Overall Engagement</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="${getColor(Math.round(projectedEngagement))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedEngagementDashOffset}" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${projectedEngagement}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Return-On-Labor®</h3>
+                        <div class="gauge">
+                            <svg width="150" height="150" viewBox="0 0 195 195">
+                                <!-- Background Arc -->
+                                <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                                <!-- Fill Arc -->
+                                <path class="gauge__fill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="${getColor(Math.round( (projectedReturnOnLabor / laborCost) * 100 ))}" stroke-dasharray="367.566" stroke-dashoffset="${projectedReturnOnLaborDashOffset}" />
+                                <!-- Percentage Text -->
+                                <text x="97.5" y="115" text-anchor="middle" font-size="24px" font-weight="700"
+                                      fill="#173248">${Math.round( (projectedReturnOnLabor / laborCost) * 100 )}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="result-item annualized-lost-labor">
+                        <h3>Annualized Lost Labor</h3>
+                        <p class="red">${formatCurrency(projectedAnnualizedLostLabor)}</p>
+                    </div>
+                </div>
+                
+                <!-- Conclusion Section Header -->
+                <h3 class="blue-header">Conclusion:</h3>
+                
+                <!-- Dynamic Paragraph Below Conclusion -->
+                <div class="dynamic-paragraph">
+                    <p>The investment in these engagement initiatives is vastly outweighed by the financial gains. For instance, allocating ${formatCurrency(investment)} to our recommendations will generate a net gain of ${formatCurrency(netGain)} in the first year alone.</p>
+                </div>
+                
+                <!-- Total Additional Profit (Annual): -->
+                <div class="financial-metrics-center">
+                    <h3 class="total-additional-profit">TOTAL ADDITIONAL PROFIT (ANNUAL):</h3>
+                    <p class="black">${formatCurrency(additionalProfit)}</p>
+                </div>
+                
+                <!-- Download PDF Button -->
+                <button class="download-pdf-button no-pdf" id="downloadPDFButton">Download Sample Analysis Report</button>
+            `;
+
+            // Inject report content into the modal
+            reportContent.innerHTML = reportHTML;
+
+            // Display the modal
+            reportModal.style.display = 'block';
+
+            // Add event listener for Download PDF button
+            const downloadPDFButton = document.getElementById('downloadPDFButton');
+            if (downloadPDFButton) {
+                downloadPDFButton.addEventListener('click', function() {
+                    // Hide elements with class 'no-pdf'
+                    document.querySelectorAll('.no-pdf').forEach(function(element) {
+                        element.style.display = 'none';
+                    });
+
+                    // Use html2canvas to capture the reportContent
+                    html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
+                        const imgData = canvas.toDataURL('image/png');
+                        
+                        // **Corrected jsPDF Instantiation**
+                        const pdf = new window.jspdf.jsPDF({
+                            orientation: 'portrait',
+                            unit: 'pt',
+                            format: 'a4' // Standard A4 size
+                        });
+                        
+                        const imgProps = pdf.getImageProperties(imgData);
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        pdf.save('Projected_Financial_Impact_Report.pdf');
+
+                        // Show elements again
+                        document.querySelectorAll('.no-pdf').forEach(function(element) {
+                            element.style.display = '';
+                        });
+
+                        // Hide the Download Button after download
+                        downloadPDFButton.style.display = 'none';
+                    }).catch(err => {
+                        console.error('Failed to generate PDF:', err);
+                        alert('An error occurred while generating the PDF. Please try again.');
+                    });
+                });
+            }
+        });
+
+        // Close Modal When 'x' is Clicked
+        closeButton.addEventListener('click', function() {
+            reportModal.style.display = 'none';
+        });
+
+        // Close Modal When Clicking Outside the Modal Content
+        window.addEventListener('click', function(event) {
+            if (event.target == reportModal) {
+                reportModal.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+DK 10_8: Working-Dynamic Turnover Option without Poor, Fair, Good Guage Descriptions (MOBILE)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Import Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Box Sizing Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Apply Inter Font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0; /* Remove padding to prevent overflow */
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 15px; /* Adjusted padding */
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 400; /* Inter Regular */
+            border: 1px solid #d3d3d3;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* Adjust placeholder font size */
+        .input-group input::placeholder {
+            font-size: 12px;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            max-width: 100%;
+            height: auto;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+            padding: 0 15px; /* Adjusted padding */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <!-- Total Labor Spend Input -->
+        <div class="input-group">
+            <label for="totalLaborCost">Total Labor Spend (USD)</label>
+            <input type="text" id="totalLaborCost" placeholder="Enter your total labor spend">
+        </div>
+
+        <!-- Estimated Employee Engagement Input -->
+        <div class="input-group">
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+        </div>
+
+        <!-- Projected Turnover Percentage Input -->
+        <div class="input-group">
+            <label for="turnoverPercentage">Projected Turnover Percentage (%)</label>
+            <input type="number" id="turnoverPercentage" placeholder="Enter projected turnover percentage" min="0" max="100">
+        </div>
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg viewBox="0 0 195 195" preserveAspectRatio="xMidYMid meet">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="engagementText">0%</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg viewBox="0 0 195 195" preserveAspectRatio="xMidYMid meet">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">0%</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Reordered Financial Metrics -->
+        <!-- A 1% Engagement Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Engagement Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- Annualized Total Losses with Turnover -->
+        <div class="financial-item">
+            <h3>Annualized Total Losses with Turnover</h3>
+            <p class="red" id="totalAnnualizedLosses">--</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+        const inputEngagement = document.getElementById('employeeEngagement');
+        const inputTurnover = document.getElementById('turnoverPercentage');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+        const totalAnnualizedLossesEl = document.getElementById('totalAnnualizedLosses');
+
+        // Initialize gauges and displays
+        calculateMetrics();
+
+        // Add event listeners
+        inputLaborCost.addEventListener('input', function(e) {
+            // Remove non-digit characters
+            const value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+            // Format with commas
+            e.target.value = formatNumberWithCommas(value);
+            calculateMetrics();
+        });
+
+        inputEngagement.addEventListener('input', calculateMetrics);
+        inputTurnover.addEventListener('input', calculateMetrics);
+
+        function formatNumberWithCommas(number) {
+            return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // For radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function calculateMetrics() {
+            // Parse the labor cost input by removing commas
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
+            const engagementPercentage = parseFloat(inputEngagement.value);
+            const turnoverPercentage = parseFloat(inputTurnover.value);
+
+            // Constants
+            const averageSalary = 60000; // Assumed average salary
+            const costToReplaceOneEmployee = 9861; // Given average replacement cost
+
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100 ||
+                isNaN(turnoverPercentage) || turnoverPercentage < 0 || turnoverPercentage > 100
+            ) {
+                resetGauges();
+                return;
+            }
+
+            /*** Update Overall Engagement Gauge ***/
+            let engagementColor = '';
+
+            if (engagementPercentage < 50) {
+                engagementColor = '#ED5C5C'; // Red
+            } else if (engagementPercentage < 80) {
+                engagementColor = '#E1D687'; // Yellow
+            } else {
+                engagementColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(engagementFill, engagementPercentage, engagementColor);
+            engagementText.textContent = engagementPercentage + '%';
+
+            /*** Calculate Return-On-Labor® ***/
+            const returnOnLabor = ((0.46 * (engagementPercentage / 100) + 0.54) * laborCost);
+            const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+
+            let returnOnLaborColor = '';
+
+            if (returnOnLaborPercentage <= 45) {
+                returnOnLaborColor = '#ED5C5C'; // Red
+            } else if (returnOnLaborPercentage <= 70) {
+                returnOnLaborColor = '#E1D687'; // Yellow
+            } else {
+                returnOnLaborColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
+            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%';
+
+            /*** Update Financial Metrics ***/
+            const lostLaborCost = laborCost - returnOnLabor;
+            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`;
+            lostLaborCostEl.textContent = formattedLostLaborCost;
+
+            const onePercentChange = (0.0046 * laborCost);
+            const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+            onePercentChangeEl.textContent = formattedOnePercentChange;
+
+            /*** Calculate Projected Turnover Costs ***/
+            // Estimate headcount
+            const estimatedHeadcount = laborCost / averageSalary;
+
+            // Convert turnover percentage to decimal
+            const turnoverDecimal = turnoverPercentage / 100;
+
+            // Projected Turnover Costs
+            const projectedTurnoverCosts = estimatedHeadcount * turnoverDecimal * costToReplaceOneEmployee;
+
+            /*** Calculate Total Annualized Losses ***/
+            const totalAnnualizedLosses = lostLaborCost + projectedTurnoverCosts;
+            const formattedTotalAnnualizedLosses = `-$${Math.round(totalAnnualizedLosses).toLocaleString('en-US')}`;
+            totalAnnualizedLossesEl.textContent = formattedTotalAnnualizedLosses;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+            totalAnnualizedLossesEl.textContent = '--';
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+DK 10_8: Working-Dynamic Turnover Option without Poor, Fair, Good Guage Descriptions (DESKTOP)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Apply Inter Font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            padding: 0 20px; /* Keep padding for consistent styling */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 400; /* Inter Regular */
+            border: 1px solid #d3d3d3;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px;
+            height: 195px;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+        }
+
+        .liner-note .footnote {
+            margin-top: 10px; /* Adjust the value as needed */
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px;
+                height: 156px;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <!-- Total Labor Spend Input -->
+        <div class="input-group">
+            <label for="totalLaborCost">Total Labor Spend (USD)</label>
+            <input type="text" id="totalLaborCost" placeholder="Enter your total labor spend">
+        </div>
+
+        <!-- Estimated Employee Engagement Input -->
+        <div class="input-group">
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+        </div>
+
+        <!-- Projected Turnover Percentage Input -->
+        <div class="input-group">
+            <label for="turnoverPercentage">Projected Turnover Percentage (%)</label>
+            <input type="number" id="turnoverPercentage" placeholder="Enter projected turnover percentage" min="0" max="100">
+        </div>
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="engagementText">0%</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">0%</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Reordered Financial Metrics -->
+        <!-- A 1% Engagement Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- Annualized Total Losses with Turnover -->
+        <div class="financial-item">
+            <h3>Annualized Total Losses with Turnover</h3>
+            <p class="red" id="totalAnnualizedLosses">--</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>*For simplicity, headcount is estimated using national average salary figures.</em>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+        const inputEngagement = document.getElementById('employeeEngagement');
+        const inputTurnover = document.getElementById('turnoverPercentage');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+        const totalAnnualizedLossesEl = document.getElementById('totalAnnualizedLosses');
+
+        // Initialize gauges and displays
+        calculateMetrics();
+
+        // Add event listeners
+        inputLaborCost.addEventListener('input', function(e) {
+            // Remove non-digit characters
+            const value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+            // Format with commas
+            e.target.value = formatNumberWithCommas(value);
+            calculateMetrics();
+        });
+
+        inputEngagement.addEventListener('input', function() {
+            calculateMetrics();
+        });
+
+        inputTurnover.addEventListener('input', function() {
+            calculateMetrics();
+        });
+
+        function formatNumberWithCommas(number) {
+            return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // For radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function calculateMetrics() {
+            // Parse the labor cost input by removing commas
+            const laborCost = parseFloat(inputLaborCost.value.replace(/,/g, ''));
+            const engagementPercentage = parseFloat(inputEngagement.value);
+            const turnoverPercentage = parseFloat(inputTurnover.value);
+
+            // Constants
+            const averageSalary = 60000; // Assumed average salary
+            const costToReplaceOneEmployee = 9861; // Given average replacement cost
+
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100 ||
+                isNaN(turnoverPercentage) || turnoverPercentage < 0 || turnoverPercentage > 100
+            ) {
+                resetGauges();
+                return;
+            }
+
+            /*** Update Overall Engagement Gauge ***/
+            let engagementColor = '';
+
+            if (engagementPercentage < 50) {
+                engagementColor = '#ED5C5C'; // Red
+            } else if (engagementPercentage < 80) {
+                engagementColor = '#E1D687'; // Yellow
+            } else {
+                engagementColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(engagementFill, engagementPercentage, engagementColor);
+            engagementText.textContent = engagementPercentage + '%';
+
+            /*** Calculate Return-On-Labor® ***/
+            const returnOnLabor = ((0.46 * (engagementPercentage / 100) + 0.54) * laborCost);
+            const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+
+            let returnOnLaborColor = '';
+
+            if (returnOnLaborPercentage <= 45) {
+                returnOnLaborColor = '#ED5C5C'; // Red
+            } else if (returnOnLaborPercentage <= 70) {
+                returnOnLaborColor = '#E1D687'; // Yellow
+            } else {
+                returnOnLaborColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
+            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%';
+
+            /*** Update Financial Metrics ***/
+            const lostLaborCost = laborCost - returnOnLabor;
+            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`;
+            lostLaborCostEl.textContent = formattedLostLaborCost;
+
+            const onePercentChange = (0.0046 * laborCost);
+            const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+            onePercentChangeEl.textContent = formattedOnePercentChange;
+
+            /*** Calculate Projected Turnover Costs ***/
+            // Estimate headcount
+            const estimatedHeadcount = laborCost / averageSalary;
+
+            // Convert turnover percentage to decimal
+            const turnoverDecimal = turnoverPercentage / 100;
+
+            // Projected Turnover Costs
+            const projectedTurnoverCosts = estimatedHeadcount * turnoverDecimal * costToReplaceOneEmployee;
+
+            /*** Calculate Total Annualized Losses ***/
+            const totalAnnualizedLosses = lostLaborCost + projectedTurnoverCosts;
+            const formattedTotalAnnualizedLosses = `-$${Math.round(totalAnnualizedLosses).toLocaleString('en-US')}`;
+            totalAnnualizedLossesEl.textContent = formattedTotalAnnualizedLosses;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+            totalAnnualizedLossesEl.textContent = '--';
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+DK 10_8: Working-Dynamic Sliders Engagement Score with no Poor, Fair, Good Guage Descriptions
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter Font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .slider-value {
+            text-align: right;
+            font-size: 14px;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #7878E3;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #7878E3;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Inter Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px;
+            height: 195px;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+        }
+
+        .liner-note a {
+            color: #6B7D8D;
+            text-decoration: none;
+        }
+
+        .liner-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px;
+                height: 156px;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <!-- Total Labor Spend Slider -->
+        <div class="input-group">
+            <label for="totalLaborCost">Total Labor Spend (USD)</label>
+            <div class="slider-value" id="laborCostValue">$500,000</div>
+            <input type="range" id="totalLaborCost" class="slider" min="100000" max="10000000" step="10000" value="500000">
+        </div>
+
+        <!-- Estimated Employee Engagement Slider -->
+        <div class="input-group">
+            <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+            <div class="slider-value" id="engagementValue">50%</div>
+            <input type="range" id="employeeEngagement" class="slider" min="0" max="100" step="1" value="50">
+        </div>
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="engagementText">50%</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="115" text-anchor="middle" font-size="31px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">77%</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">-$114,000</p>
+        </div>
+
+        <!-- A 1% Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">$4,600</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>Gallup 2024 Annual Employee Engagement, State of The Global Workplace Report, June 12, 2024.</em><br>
+        <a href="https://www.gallup.com/394373/indicator-employee-engagement.aspx" target="_blank">
+            https://www.gallup.com/394373/indicator-employee-engagement.aspx
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+        const inputEngagement = document.getElementById('employeeEngagement');
+
+        const laborCostValueDisplay = document.getElementById('laborCostValue');
+        const engagementValueDisplay = document.getElementById('engagementValue');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+
+        // Initialize gauges and displays
+        calculateMetrics();
+
+        inputLaborCost.addEventListener('input', function() {
+            laborCostValueDisplay.textContent = `$${parseInt(inputLaborCost.value).toLocaleString('en-US')}`;
+            calculateMetrics();
+        });
+
+        inputEngagement.addEventListener('input', function() {
+            engagementValueDisplay.textContent = `${inputEngagement.value}%`;
+            calculateMetrics();
+        });
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // For radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function calculateMetrics() {
+            const laborCost = parseFloat(inputLaborCost.value);
+            const engagementPercentage = parseFloat(inputEngagement.value);
+
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100
+            ) {
+                // Reset results if input is invalid
+                resetGauges();
+                return;
+            }
+
+            /*** Update Overall Engagement Gauge ***/
+            let engagementColor = '';
+
+            if (engagementPercentage < 50) {
+                engagementColor = '#ED5C5C'; // Red
+            } else if (engagementPercentage < 80) {
+                engagementColor = '#E1D687'; // Yellow
+            } else {
+                engagementColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(engagementFill, engagementPercentage, engagementColor);
+            engagementText.textContent = engagementPercentage + '%';
+
+            /*** Calculate Return-On-Labor® ***/
+            const returnOnLabor = ((0.46 * (engagementPercentage / 100) + 0.54) * laborCost);
+            const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+
+            let returnOnLaborColor = '';
+
+            if (returnOnLaborPercentage <= 45) {
+                returnOnLaborColor = '#ED5C5C'; // Red
+            } else if (returnOnLaborPercentage <= 70) {
+                returnOnLaborColor = '#E1D687'; // Yellow
+            } else {
+                returnOnLaborColor = '#75BB7D'; // Green
+            }
+
+            updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
+            returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%';
+
+            /*** Update Financial Metrics ***/
+            const lostLaborCost = laborCost - returnOnLabor;
+            const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`;
+            lostLaborCostEl.textContent = formattedLostLaborCost;
+
+            const onePercentChange = (0.0046 * laborCost);
+            const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+            onePercentChangeEl.textContent = formattedOnePercentChange;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+DK 10_8: Working-Dynamic Engagement Score
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter and Ubuntu Fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter and Ubuntu Fonts */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 400; /* Regular */
+            margin-bottom: 15px;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px;
+            height: 195px;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 1s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+            color: #6B7D8D;
+            margin-bottom: 5px;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6B7D8D;
+            font-weight: 300;
+        }
+
+        .liner-note a {
+            color: #6B7D8D;
+            text-decoration: none;
+        }
+
+        .liner-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px;
+                height: 156px;
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <label for="totalLaborCost">Total Labor Spend (USD)</label>
+        <input type="number" id="totalLaborCost" placeholder="Enter your total labor spend" min="0">
+
+        <label for="employeeEngagement">Estimated Employee Engagement (%)</label>
+        <input type="number" id="employeeEngagement" placeholder="Enter estimated employee engagement" min="0" max="100">
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="104" text-anchor="middle" font-size="23px" font-weight="700"
+                          fill="#173248" id="engagementText">0%</text>
+                    <!-- Label Text -->
+                    <text x="97.5" y="130" text-anchor="middle" font-size="18px" font-weight="300"
+                          fill="#6B7D8D" id="engagementLabel" style="visibility: hidden;"></text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5"
+                          stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="104" text-anchor="middle" font-size="23px" font-weight="700"
+                          fill="#173248" id="returnOnLaborText">0%</text>
+                    <!-- Label Text -->
+                    <text x="97.5" y="130" text-anchor="middle" font-size="18px" font-weight="300"
+                          fill="#6B7D8D" id="returnOnLaborLabel" style="visibility: hidden;"></text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- A 1% Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>Gallup 2024 Annual Employee Engagement, State of The Global Workplace Report, June 12, 2024.</em><br>
+        <a href="https://www.gallup.com/394373/indicator-employee-engagement.aspx" target="_blank">
+            https://www.gallup.com/394373/indicator-employee-engagement.aspx
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+        const inputEngagement = document.getElementById('employeeEngagement');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+        const engagementLabel = document.getElementById('engagementLabel');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+        const returnOnLaborLabel = document.getElementById('returnOnLaborLabel');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+
+        // Initialize gauges to 0%
+        initializeGauges();
+
+        function initializeGauges() {
+            // Overall Engagement - initially 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.textContent = '';
+            engagementLabel.style.visibility = 'hidden';
+
+            // Return-On-Labor® - initially 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.textContent = '';
+            returnOnLaborLabel.style.visibility = 'hidden';
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // Updated for radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.textContent = '';
+            engagementLabel.style.visibility = 'hidden';
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.textContent = '';
+            returnOnLaborLabel.style.visibility = 'hidden';
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+        }
+
+        inputLaborCost.addEventListener('input', calculateMetrics);
+        inputEngagement.addEventListener('input', calculateMetrics);
+
+        function calculateMetrics() {
+            const laborCost = parseFloat(inputLaborCost.value);
+            const engagementPercentage = parseFloat(inputEngagement.value);
+
+            if (
+                isNaN(laborCost) || laborCost <= 0 ||
+                isNaN(engagementPercentage) || engagementPercentage < 0 || engagementPercentage > 100
+            ) {
+                // Reset results if input is invalid
+                resetGauges();
+                return;
+            }
+
+            // Reset gauges before updating
+            resetGauges();
+
+            setTimeout(function() {
+                /*** Update Overall Engagement Gauge ***/
+                let engagementColor = '';
+                let engagementLabelText = '';
+
+                if (engagementPercentage < 50) {
+                    engagementColor = '#ED5C5C'; // Red
+                    engagementLabelText = 'Poor';
+                } else if (engagementPercentage < 80) {
+                    engagementColor = '#E1D687'; // Yellow
+                    engagementLabelText = 'Fair';
+                } else {
+                    engagementColor = '#75BB7D'; // Green
+                    engagementLabelText = 'Good';
+                }
+
+                updateGauge(engagementFill, engagementPercentage, engagementColor);
+                engagementText.textContent = engagementPercentage + '%';
+                engagementLabel.textContent = engagementLabelText;
+                engagementLabel.style.visibility = 'visible';
+
+                /*** Calculate Return-On-Labor® ***/
+                const returnOnLabor = ((0.46 * (engagementPercentage / 100) + 0.54) * laborCost);
+                const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+
+                let returnOnLaborColor = '';
+                let returnOnLaborLabelText = '';
+
+                // Adjusted ranges and labels
+                if (returnOnLaborPercentage <= 45) {
+                    returnOnLaborColor = '#ED5C5C'; // Red
+                    returnOnLaborLabelText = 'Poor';
+                } else if (returnOnLaborPercentage <= 70) {
+                    returnOnLaborColor = '#E1D687'; // Yellow
+                    returnOnLaborLabelText = 'Fair';
+                } else {
+                    returnOnLaborColor = '#75BB7D'; // Green
+                    returnOnLaborLabelText = 'Good';
+                }
+
+                updateGauge(returnOnLaborFill, returnOnLaborPercentage, returnOnLaborColor);
+                returnOnLaborText.textContent = Math.round(returnOnLaborPercentage) + '%';
+                returnOnLaborLabel.textContent = returnOnLaborLabelText;
+                returnOnLaborLabel.style.visibility = 'visible';
+
+                /*** Update Financial Metrics ***/
+                const lostLaborCost = laborCost - returnOnLabor;
+                const formattedLostLaborCost = `-$${Math.round(lostLaborCost).toLocaleString('en-US')}`;
+                lostLaborCostEl.textContent = formattedLostLaborCost;
+
+                const onePercentChange = (0.0046 * laborCost);
+                const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+                onePercentChangeEl.textContent = formattedOnePercentChange;
+            }, 500);
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+10_7- Working. Static-33% Fixed Engagement Score
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter and Ubuntu Fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter and Ubuntu Fonts */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px; /* Increased from 10px to 25px for more padding */
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 400; /* Regular */
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 195px; /* Increased by 30% */
+            height: 195px; /* Increased by 30% */
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 1s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin-bottom: 5px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px; /* Increased from 5px to 15px for more padding */
+            font-size: 12px;
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 300; /* Lightest weight for Ubuntu */
+        }
+
+        .liner-note a {
+            color: #6B7D8D;
+            text-decoration: none;
+        }
+
+        .liner-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 156px; /* Increased by 30% */
+                height: 156px; /* Increased by 30% */
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <label for="totalLaborCost">Total Labor Spend (USD)</label>
+        <input type="number" id="totalLaborCost" placeholder="Enter your total labor spend" min="0">
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M39 162.5 A78 78 0 1 1 156 162.5" stroke="#ED5C5C" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="104" text-anchor="middle" font-size="23px" font-weight="700" fill="#173248" id="engagementText">0%</text>
+                    <!-- Label Text -->
+                    <text x="97.5" y="130" text-anchor="middle" font-size="18px" font-weight="300" fill="#6B7D8D" id="engagementLabel" style="visibility: hidden;">Poor</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M39 162.5 A78 78 0 1 1 156 162.5" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M39 162.5 A78 78 0 1 1 156 162.5" stroke="#E1D687" stroke-dasharray="367.566" stroke-dashoffset="367.566" />
+                    <!-- Percentage Text -->
+                    <text x="97.5" y="104" text-anchor="middle" font-size="23px" font-weight="700" fill="#173248" id="returnOnLaborText">0%</text>
+                    <!-- Label Text -->
+                    <text x="97.5" y="130" text-anchor="middle" font-size="18px" font-weight="300" fill="#6B7D8D" id="returnOnLaborLabel" style="visibility: hidden;">Fair</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- A 1% Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>Gallup 2024 Annual Employee Engagement, State of The Global Workplace Report, June 12, 2024.</em><br>
+        <a href="https://www.gallup.com/394373/indicator-employee-engagement.aspx" target="_blank">https://www.gallup.com/394373/indicator-employee-engagement.aspx</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+        const engagementLabel = document.getElementById('engagementLabel');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+        const returnOnLaborLabel = document.getElementById('returnOnLaborLabel');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+
+        // Initialize gauges to 0%
+        initializeGauges();
+
+        function initializeGauges() {
+            // Overall Engagement - initially 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.style.visibility = 'hidden'; // Hide label initially
+
+            // Return-On-Labor® - initially 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.style.visibility = 'hidden'; // Hide label initially
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 367.566; // Updated for radius 78
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.style.visibility = 'hidden'; // Hide label
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.style.visibility = 'hidden'; // Hide label
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+        }
+
+        inputLaborCost.addEventListener('input', function() {
+            const laborCost = parseFloat(inputLaborCost.value);
+
+            if (isNaN(laborCost) || laborCost < 0) {
+                // Reset results if input is invalid
+                resetGauges();
+                return;
+            }
+
+            // Reset gauges to 0% before animating to new values
+            resetGauges();
+
+            // Short delay to allow reset animation to complete before updating to new values
+            setTimeout(function() {
+                // Calculate Return on Labor
+                const returnOnLabor = 0.6918 * laborCost;
+                const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100;
+
+                // Calculate Lost Labor Cost
+                const lostLaborCost = returnOnLabor - laborCost;
+
+                // Calculate 1% Change in Engagement
+                const onePercentChange = 4600 * (laborCost * 0.000001);
+
+                // Update Overall Engagement gauge to 33%
+                updateGauge(engagementFill, 33, '#ED5C5C');
+                engagementText.textContent = '33%';
+                engagementLabel.style.visibility = 'visible'; // Show label
+
+                // Update Return-On-Labor® gauge to 69%
+                updateGauge(returnOnLaborFill, 69, '#E1D687'); // Yellow color as specified
+                returnOnLaborText.textContent = '69%';
+                returnOnLaborLabel.style.visibility = 'visible'; // Show label
+
+                // Update Annualized Lost Labor
+                const formattedLostLaborCost = `-$${Math.round(Math.abs(lostLaborCost)).toLocaleString('en-US')}`;
+                lostLaborCostEl.textContent = formattedLostLaborCost;
+
+                // Update A 1% Shift in Engagement is worth
+                const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+                onePercentChangeEl.textContent = formattedOnePercentChange;
+            }, 1000); // Delay in milliseconds to match transition duration
+        });
+    });
+</script>
+
+</body>
+</html>
+
+OLD
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Culture MRI® Performance Estimator</title>
+    <!-- Import Inter and Ubuntu Fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter and Ubuntu Fonts */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .calculator-container {
+            max-width: 700px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styling */
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 25px; /* Increased from 10px to 25px for more padding */
+        }
+
+        .calculator-header h2 {
+            font-size: 28px;
+            font-weight: 700; /* Inter Bold */
+            color: #333333;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 5px;
+        }
+
+        .calculator-header p {
+            font-size: 16px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .input-section input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 400; /* Regular */
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            width: 48%;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin-bottom: 10px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        /* Gauge Styling */
+        .gauge {
+            width: 150px;
+            height: 150px; /* Increased height to prevent clipping */
+            position: relative;
+            margin: 0 auto 10px;
+        }
+
+        .gauge__background {
+            stroke: #EFEFEF;
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge__fill {
+            stroke-linecap: round;
+            stroke-width: 10;
+            fill: none;
+            transition: stroke-dashoffset 1s ease-out, stroke 0.5s ease;
+        }
+
+        /* Financial Metrics */
+        .financial-metrics {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .financial-item {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .financial-item h3 {
+            font-size: 18px;
+            font-weight: 300; /* Ubuntu Light */
+            color: #6B7D8D;
+            margin-bottom: 5px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .financial-item p {
+            font-size: 20px;
+            font-weight: 700; /* Inter Bold */
+            color: #173248;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .financial-item p.red {
+            color: #ED5C5C;
+        }
+
+        .financial-item p.green {
+            color: #75BB7D;
+        }
+
+        /* Footer Styling */
+        .calculator-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777777;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Liner Note Styling */
+        .liner-note {
+            text-align: center;
+            margin-top: 15px; /* Increased from 5px to 15px for more padding */
+            font-size: 12px;
+            color: #6B7D8D;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 300; /* Lightest weight for Ubuntu */
+        }
+
+        .liner-note a {
+            color: #6B7D8D;
+            text-decoration: none;
+        }
+
+        .liner-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .result-item {
+                width: 100%;
+            }
+
+            .gauge {
+                width: 120px;
+                height: 120px; /* Adjusted for smaller screens */
+            }
+
+            .financial-item p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h2>The Culture MRI® Performance Estimator</h2>
+        <p>Discover How Employee Engagement Impacts Your Profitability</p>
+    </div>
+
+    <div class="input-section">
+        <label for="totalLaborCost">Total Labor Spend (USD)</label>
+        <input type="number" id="totalLaborCost" placeholder="Enter your total labor spend" min="0">
+    </div>
+
+    <div class="results-section">
+        <!-- Overall Engagement Gauge -->
+        <div class="result-item">
+            <h3>Overall Engagement</h3>
+            <div class="gauge">
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M30 125 A60 60 0 1 1 120 125" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="engagementFill" d="M30 125 A60 60 0 1 1 120 125" stroke="#ED5C5C" stroke-dasharray="282.743" stroke-dashoffset="282.743" />
+                    <!-- Percentage Text -->
+                    <text x="75" y="80" text-anchor="middle" font-size="18px" font-weight="700" fill="#173248" id="engagementText">0%</text>
+                    <!-- Label Text -->
+                    <text x="75" y="100" text-anchor="middle" font-size="14px" font-weight="300" fill="#6B7D8D" id="engagementLabel" style="visibility: hidden;">Poor</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Return-On-Labor® Gauge -->
+        <div class="result-item">
+            <h3>Return-On-Labor®</h3>
+            <div class="gauge">
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                    <!-- Background Arc -->
+                    <path class="gauge__background" d="M30 125 A60 60 0 1 1 120 125" />
+                    <!-- Fill Arc -->
+                    <path class="gauge__fill" id="returnOnLaborFill" d="M30 125 A60 60 0 1 1 120 125" stroke="#E1D687" stroke-dasharray="282.743" stroke-dashoffset="282.743" />
+                    <!-- Percentage Text -->
+                    <text x="75" y="80" text-anchor="middle" font-size="18px" font-weight="700" fill="#173248" id="returnOnLaborText">0%</text>
+                    <!-- Label Text -->
+                    <text x="75" y="100" text-anchor="middle" font-size="14px" font-weight="300" fill="#6B7D8D" id="returnOnLaborLabel" style="visibility: hidden;">Fair</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="financial-metrics">
+        <!-- Annualized Lost Labor -->
+        <div class="financial-item">
+            <h3>Annualized Lost Labor</h3>
+            <p class="red" id="lostLaborCost">--</p>
+        </div>
+
+        <!-- A 1% Shift in Engagement is worth -->
+        <div class="financial-item">
+            <h3>A 1% Shift in Engagement is worth</h3>
+            <p class="green" id="onePercentChange">--</p>
+        </div>
+    </div>
+
+    <div class="calculator-footer">
+        <p>&copy; 2024 The Culture MRI®. All Rights Reserved.</p>
+    </div>
+
+    <div class="liner-note">
+        <em>Gallup 2024 Annual Employee Engagement, State of The Global Workplace Report, June 12, 2024.</em><br>
+        <a href="https://www.gallup.com/394373/indicator-employee-engagement.aspx" target="_blank">https://www.gallup.com/394373/indicator-employee-engagement.aspx</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputLaborCost = document.getElementById('totalLaborCost');
+
+        const engagementFill = document.getElementById('engagementFill');
+        const engagementText = document.getElementById('engagementText');
+        const engagementLabel = document.getElementById('engagementLabel');
+
+        const returnOnLaborFill = document.getElementById('returnOnLaborFill');
+        const returnOnLaborText = document.getElementById('returnOnLaborText');
+        const returnOnLaborLabel = document.getElementById('returnOnLaborLabel');
+
+        const lostLaborCostEl = document.getElementById('lostLaborCost');
+        const onePercentChangeEl = document.getElementById('onePercentChange');
+
+        // Initialize gauges to 0%
+        initializeGauges();
+
+        function initializeGauges() {
+            // Overall Engagement - initially 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.style.visibility = 'hidden'; // Hide label initially
+
+            // Return-On-Labor® - initially 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.style.visibility = 'hidden'; // Hide label initially
+        }
+
+        function updateGauge(fillElement, percentage, color) {
+            // Ensure percentage does not exceed 100%
+            const cappedPercentage = Math.min(Math.max(percentage, 0), 100);
+            const dashArray = 282.743; // Total length for 270 degrees (3/4 circle)
+            const dashOffset = dashArray - (cappedPercentage / 100) * dashArray;
+
+            fillElement.style.strokeDasharray = dashArray;
+            fillElement.style.strokeDashoffset = dashOffset;
+            fillElement.style.stroke = color;
+        }
+
+        function resetGauges() {
+            // Reset Overall Engagement gauge to 0%
+            updateGauge(engagementFill, 0, '#ED5C5C');
+            engagementText.textContent = '0%';
+            engagementLabel.style.visibility = 'hidden'; // Hide label
+
+            // Reset Return-On-Labor® gauge to 0%
+            updateGauge(returnOnLaborFill, 0, '#E1D687');
+            returnOnLaborText.textContent = '0%';
+            returnOnLaborLabel.style.visibility = 'hidden'; // Hide label
+
+            // Reset financial metrics to '--'
+            lostLaborCostEl.textContent = '--';
+            onePercentChangeEl.textContent = '--';
+        }
+
+        inputLaborCost.addEventListener('input', function() {
+            const laborCost = parseFloat(inputLaborCost.value);
+
+            if (isNaN(laborCost) || laborCost < 0) {
+                // Reset results if input is invalid
+                resetGauges();
+                return;
+            }
+
+            // Reset gauges to 0% before animating to new values
+            resetGauges();
+
+            // Short delay to allow reset animation to complete before updating to new values
+            setTimeout(function() {
+                // Calculate Return on Labor
+                const returnOnLabor = 0.6918 * laborCost; // (0.46 * 0.33 + 0.54) * C11 = 0.6918 * C11
+                const returnOnLaborPercentage = (returnOnLabor / laborCost) * 100; // 69.18%
+
+                // Calculate Lost Labor Cost
+                const lostLaborCost = returnOnLabor - laborCost; // -0.3082 * C11
+
+                // Calculate 1% Change in Engagement
+                const onePercentChange = 4600 * (laborCost * 0.000001); // 0.0046 * C11
+
+                // Update Overall Engagement gauge to 33%
+                updateGauge(engagementFill, 33, '#ED5C5C');
+                engagementText.textContent = '33%';
+                engagementLabel.style.visibility = 'visible'; // Show label
+
+                // Update Return-On-Labor® gauge to 69%
+                updateGauge(returnOnLaborFill, 69, '#E1D687'); // Yellow color as specified
+                returnOnLaborText.textContent = '69%';
+                returnOnLaborLabel.style.visibility = 'visible'; // Show label
+
+                // Update Annualized Lost Labor
+                const formattedLostLaborCost = `-$${Math.round(Math.abs(lostLaborCost)).toLocaleString('en-US')}`;
+                lostLaborCostEl.textContent = formattedLostLaborCost;
+
+                // Update A 1% Shift in Engagement is worth
+                const formattedOnePercentChange = `$${Math.round(onePercentChange).toLocaleString('en-US')}`;
+                onePercentChangeEl.textContent = formattedOnePercentChange;
+            }, 1000); // Delay in milliseconds to match transition duration
+        });
+    });
+</script>
+
+</body>
+</html>
+
