@@ -962,70 +962,72 @@
             reportModal.style.display = 'block';
 
             // Add event listener for Download PDF button
-const downloadPDFButton = document.getElementById('downloadPDFButton');
-if (downloadPDFButton) {
-    downloadPDFButton.addEventListener('click', function() {
-        // Hide elements with class 'no-pdf'
-        document.querySelectorAll('.no-pdf').forEach(function(element) {
-            element.style.display = 'none';
+            const downloadPDFButton = document.getElementById('downloadPDFButton');
+            if (downloadPDFButton) {
+                downloadPDFButton.addEventListener('click', function() {
+                    // Hide elements with class 'no-pdf'
+                    document.querySelectorAll('.no-pdf').forEach(function(element) {
+                        element.style.display = 'none';
+                    });
+
+                    // Use html2canvas to capture the reportContent
+                    html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
+                        const imgData = canvas.toDataURL('image/png');
+
+                        // **Define Margins and Page Dimensions**
+                        const marginLeft = 10; // 0.25in *72pt/in = 18pt
+                        const marginTop = 36;  // 0.25in
+                        const marginRight = 10; // 0.25in
+                        const marginBottom = 36; // 0.5in
+
+                        const pageWidth = 612; // 8.5in *72pt/in =612pt
+                        const pageHeight = 792; //11in *72pt/in =792pt
+
+                        const contentWidth = pageWidth - marginLeft - marginRight; //592pt
+                        const contentHeight = pageHeight - marginTop - marginBottom; //738pt
+
+                        // **Instantiate jsPDF with 'letter' format**
+                        const pdf = new window.jspdf.jsPDF({
+                            orientation: 'portrait',
+                            unit: 'pt',
+                            format: 'letter' // Changed from 'a4' to 'letter' for 8.5x11 inches
+                        });
+
+                        // **Calculate Image Dimensions to Fit Within Margins**
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+
+                        // Calculate the scaling factor to fit the image within the content area
+                        const scaleFactor = Math.min(contentWidth / imgWidth, contentHeight / imgHeight);
+
+                        // Calculate the scaled width and height
+                        const scaledWidth = imgWidth * scaleFactor;
+                        const scaledHeight = imgHeight * scaleFactor;
+
+                        // Calculate the position to center the image within the content area
+                        const x = marginLeft + (contentWidth - scaledWidth) / 2;
+                        const y = marginTop + (contentHeight - scaledHeight) / 2;
+
+                        // **Add the Image to PDF with Calculated Dimensions and Position**
+                        pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
+
+                        // **Save the PDF**
+                        pdf.save('Projected_Financial_Impact_Report.pdf');
+
+                        // Show elements again
+                        document.querySelectorAll('.no-pdf').forEach(function(element) {
+                            element.style.display = '';
+                        });
+
+                        // Hide the Download Button after download
+                        downloadPDFButton.style.display = 'none';
+                    }).catch(err => {
+                        console.error('Failed to generate PDF:', err);
+                        alert('An error occurred while generating the PDF. Please try again.');
+                    });
+                });
+            }
         });
-
-        // Use html2canvas to capture the reportContent
-        html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
-            const imgData = canvas.toDataURL('image/png');
-
-            // **Define Margins and Page Dimensions**
-            const marginLeft = 36; // 0.5in *72pt/in = 36pt
-            const marginTop = 36;  // 0.5in * 72pt/in = 36pt
-            const marginRight = 36; // 0.5in * 72pt/in = 36pt
-            const marginBottom = 36; // 0.5in * 72pt/in = 36pt
-
-            const pageWidth = 612; // 8.5in *72pt/in = 612pt
-            const pageHeight = 792; //11in *72pt/in = 792pt
-
-            const contentWidth = pageWidth - marginLeft - marginRight; //540pt
-            const contentHeight = pageHeight - marginTop - marginBottom; //720pt
-
-            // **Instantiate jsPDF with 'letter' format**
-            const pdf = new window.jspdf.jsPDF({
-                orientation: 'portrait',
-                unit: 'pt',
-                format: 'letter' // Changed from 'a4' to 'letter' for 8.5x11 inches
-            });
-
-            // **Calculate Fixed Image Dimensions to Fit Within Margins**
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-
-            // Use the content area (width/height minus margins) for the scaling
-            const scaleFactor = Math.min(contentWidth / imgWidth, contentHeight / imgHeight);
-
-            // Calculate the scaled width and height based on the margins
-            const scaledWidth = imgWidth * scaleFactor;
-            const scaledHeight = imgHeight * scaleFactor;
-
-            // **Position Image Directly Within the Margins**
-            const x = marginLeft;
-            const y = marginTop;
-
-            // **Add the Image to PDF with Calculated Dimensions and Position**
-            pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
-
-            // **Save the PDF**
-            pdf.save('Projected_Financial_Impact_Report.pdf');
-
-            // Show elements again
-            document.querySelectorAll('.no-pdf').forEach(function(element) {
-                element.style.display = '';
-            });
-
-            // Hide the Download Button after download
-            downloadPDFButton.style.display = 'none';
-        }).catch(err => {
-            console.error('Failed to generate PDF:', err);
-            alert('An error occurred while generating the PDF. Please try again.');
-        });
-    });
 
         // Close Modal When 'x' is Clicked
         closeButton.addEventListener('click', function() {
