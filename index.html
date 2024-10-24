@@ -983,15 +983,15 @@
                         const imgData = canvas.toDataURL('image/png');
 
                         // **Define Margins and Page Dimensions**
-                        const marginLeft = 36; // 0.5in *72pt/in = 36pt
+                        const marginLeft = 10; // 0.5in *72pt/in = 36pt
                         const marginTop = 54;  // 0.75in * 72pt/in = 54pt
-                        const marginRight = 36; // Fixed the syntax error here
+                        const marginRight = 10; // Fixed the syntax error here
                         const marginBottom = 36; // 0.5in * 72pt/in = 36pt
 
                         const pageWidth = 612; // 8.5in *72pt/in =612pt
                         const pageHeight = 792; //11in *72pt/in =792pt
 
-                        const contentWidth = pageWidth - marginLeft - marginRight; //540pt
+                        const contentWidth = pageWidth - marginLeft - marginRight; //592pt
                         const contentHeight = pageHeight - marginTop - marginBottom; //702pt
 
                         // **Instantiate jsPDF with 'letter' format**
