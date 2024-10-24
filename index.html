@@ -575,7 +575,7 @@
         // Initialize gauges and displays
         calculateMetrics();
 
-        // Add event listeners
+        // Add event listeners for input fields
         inputLaborCost.addEventListener('input', function(e) {
             // Remove non-digit characters except decimal point
             const value = e.target.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
@@ -701,6 +701,13 @@
             totalAnnualizedLossesEl.textContent = '--';
         }
 
+        // Function to remove existing event listeners from downloadPDFButton
+        function removeDownloadPDFButtonListeners(button) {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            return newButton;
+        }
+
         // Generate Report Button Click Event
         generateReportButton.addEventListener('click', function() {
             // Get current inputs
@@ -761,10 +768,10 @@
             // Generate report content based on supplied text
             const reportHTML = `
                 <div class="logo">
-                    <img src=DK INSERT HERE></div>
+                    <img src="DK INSERT HERE" alt="Company Logo"></div>
                 <hr class="horizontal-line">
                 <h2>Financial Impact For Your Company</h2>
-                <p>The Culture MRI® will show you exactly how to increase the return on your current labor cost. You will see how to improve your company’s Employee Value Proposition and how to quickly experience incremental bottom-line profitability as a result. This improvements derived from The Culture MRI® often require no additional spending. The result will be higher productivity, and profitability as well as better employee engagement.</p>
+                <p>The Culture MRI® will show you exactly how to increase the return on your current labor cost. You will see how to improve your company’s Employee Value Proposition and how to quickly experience incremental bottom-line profitability as a result. These improvements derived from The Culture MRI® often require no additional spending. The result will be higher productivity, and profitability as well as better employee engagement.</p>
                 <p>This is a high-level financial profitability outline based on your data inputs. This demonstrates accurately and conservatively the projected incremental annual profit you can expect with a 10% increase in employee engagement. Further, when you implement The Culture MRI®, you will receive a detailed roadmap with how to get there, detailed employee engagement analyses and your data tied to specific recommendations and outcomes.</p>
                 
                 <!-- Before Section Header -->
@@ -813,7 +820,7 @@
                 <!-- After Section Header -->
                 <h3 class="blue-header">After:</h3>
                 
-                <p>With The Culture MRI® and customized recommendations provided in The Culture MRI® assessment of findings, you will conservatively be able to elevate your employee engagement to ${projectedEngagement}%, thereby recovering ${formatCurrency(additionalProfit)}  in incremental annual labor efficiency.</p>
+                <p>With The Culture MRI® and customized recommendations provided in The Culture MRI® assessment of findings, you will conservatively be able to elevate your employee engagement to ${projectedEngagement}%, thereby recovering ${formatCurrency(additionalProfit)} in incremental annual labor efficiency.</p>
                 
                 <!-- Insert Projected Engagement Gauge, Return-On-Labor® Gauge, and Annualized Lost Labor in 3 Columns -->
                 <div class="results-section">
@@ -952,17 +959,27 @@
             // **Display the modal**
             reportModal.style.display = 'block';
 
+            // Retrieve the newly added Download PDF button
+            let downloadPDFButton = document.getElementById('downloadPDFButton');
+
+            // Remove any existing event listeners to prevent multiple attachments
+            if (downloadPDFButton) {
+                downloadPDFButton = removeDownloadPDFButtonListeners(downloadPDFButton);
+            }
+
             // Add event listener for Download PDF button
-            const downloadPDFButton = document.getElementById('downloadPDFButton');
             if (downloadPDFButton) {
                 downloadPDFButton.addEventListener('click', function() {
+                    console.log('Download PDF button clicked.');
+
                     // Hide elements with class 'no-pdf'
                     document.querySelectorAll('.no-pdf').forEach(function(element) {
                         element.style.display = 'none';
                     });
 
                     // Use html2canvas to capture the reportContent
-                    html2canvas(reportContent, { scale: 3 }).then(canvas => { // Increased scale for better quality
+                    html2canvas(reportContent, { scale: 3, useCORS: true }).then(canvas => { // Increased scale for better quality
+                        console.log('html2canvas captured the reportContent.');
                         const imgData = canvas.toDataURL('image/png');
 
                         // **Define Margins and Page Dimensions**
@@ -1004,6 +1021,7 @@
 
                         // **Save the PDF**
                         pdf.save('Projected_Financial_Impact_Report.pdf');
+                        console.log('PDF generated and download initiated.');
 
                         // Show elements again
                         document.querySelectorAll('.no-pdf').forEach(function(element) {
@@ -1019,6 +1037,13 @@
                 });
             }
         });
+
+        // Function to remove existing event listeners from a button by cloning
+        function removeDownloadPDFButtonListeners(button) {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            return newButton;
+        }
 
         // Close Modal When 'x' is Clicked
         closeButton.addEventListener('click', function() {
