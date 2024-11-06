@@ -10,6 +10,56 @@
     <!-- jsPDF and html2canvas Libraries for PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+     <!-- Universal Affiliate Tracking Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to retrieve query parameters
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            // Capture the 'ref' parameter from the URL
+            const refParam = getQueryParam('ref');
+
+            if (refParam) {
+                // Validate and decode the Affiliate ID
+                const prefix = 'CMRI_';
+                if (refParam.startsWith(prefix)) {
+                    const encodedAffiliateID = refParam.substring(prefix.length);
+                    
+                    try {
+                        // Decode from Base64
+                        const decodedAffiliateID = atob(encodedAffiliateID); // Base64 decoding
+
+                        // **Store the Affiliate ID in localStorage**
+                        localStorage.setItem('affiliate_id', decodedAffiliateID);
+
+                        // **Optional:** Also store in a hidden input field within the form
+                        const reportForm = document.getElementById('reportForm');
+                        if (reportForm) {
+                            let affiliateInput = reportForm.querySelector('input[name="affiliate_id"]');
+                            if (!affiliateInput) {
+                                affiliateInput = document.createElement('input');
+                                affiliateInput.type = 'hidden';
+                                affiliateInput.name = 'affiliate_id';
+                                reportForm.appendChild(affiliateInput);
+                            }
+                            affiliateInput.value = decodedAffiliateID;
+                        }
+
+                        // **Remove the 'ref' parameter from the URL for cleanliness**
+                        const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanURL);
+                    } catch (error) {
+                        console.error('Error decoding Affiliate ID:', error);
+                    }
+                }
+            }
+        });
+    </script>
+    
     <style>
         /* Apply Inter Font */
         body {
